@@ -15,19 +15,33 @@ Welcome to the server repository for the Communify App!
 - [Database Schema](#database-schema)
 - [Routes](#routes)
 
-# Setup & Installation
+# Installation
 
-To set up the node server locally ensure to follow th esteps below.
+- Clone the repo
+- Navigate to the `/Communify-server/server` folder
+- Run `npm i` to install dependencies
+- Navigate back to the `/Communify-server` folder to run bash scripts
 
-1. In the terminal run `git clone https://github.com/C0mmunify/Communify-server.git`
+# Local Usage
 
-2. Navigate to the cloned repo using `cd Communify-server`
+`bash _scripts/start.sh`
 
-3. Run `npm i` to install dependencies
+- Starts api & db services
+- Runs db migrations
+- Seeds db for development
+- Serves api on `localhost:3003`
 
-4. To start the server run `npm start`
+Note: Press `Ctrl` + `C` to terminate the docker container
 
-**Note:** To host the development server, run `npm run dev`
+`bash _scripts/stop.sh`
+
+- Stops all running services
+
+`bash _scripts/teardown.sh`
+
+- Stops all running services
+- Removes containers
+- Removes volumes
 
 # Technologies
 

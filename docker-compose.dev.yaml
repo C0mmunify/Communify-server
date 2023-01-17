@@ -1,0 +1,27 @@
+services:
+  api:
+    container_name: c0mmunify_dev_api
+    ports:
+      - 3000:3000
+    environment:
+      - PGUSER=c0mmunify
+      - PGHOST=db
+      - PGPASSWORD=verysecurepassword
+      - PGDATABASE=ourdb
+      - PGPORT=5432
+    depends_on:
+      - db
+    command: bash -c "npm install && npm run dev"
+
+  db:
+    container_name: c0mmunify_db
+    volumes:
+      - "dbdata:/var/lib/postgresql/data"
+    environment:
+      - POSTGRES_DB=ourdb
+      - POSTGRES_PASSWORD=verysecurepassword
+volumes:
+  dbdata:
+networks:
+  default:
+    name: c0mmunify_api
