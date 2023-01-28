@@ -1,11 +1,10 @@
-INSERT INTO council (id, area)
+INSERT INTO council (area)
 VALUES
-    (1, 'Sheffield'),
-    (2, 'Cardiff'),
-    (3, 'London');
+    ('Sheffield'),
+    ('Cardiff'),
+    ('London');
 
 INSERT INTO users (
-    id,
     name, 
     username, 
     email,
@@ -15,12 +14,11 @@ INSERT INTO users (
     admin
 ) 
 VALUES
-    (1, 'Noah Platton', 'nplatton' ,'noah.platton@getfutureproof.co.uk', 07964170706, 24, 1, True),
-    (2, 'Tom Grainger', 'Graingertom', 'thomas.grainger@getfutureproof.co.uk', null, 24, 2, True),
-    (3, 'Franklyn Asafo', 'asafoadjeif', 'franjly.asafo@getfutureproof.co.uk', null, 24, 3, True);
+    ('Noah Platton', 'nplatton' ,'noah.platton@getfutureproof.co.uk', '07964170706', 24, 1, True),
+    ('Tom Grainger', 'Graingertom', 'thomas.grainger@getfutureproof.co.uk', null, 24, 2, True),
+    ('Franklyn Asafo', 'asafoadjeif', 'franklyn.asafo@getfutureproof.co.uk', null, 24, 3, True);
 
 INSERT INTO events (
-    id, 
     title, 
     description,
     location,
@@ -32,4 +30,4 @@ INSERT INTO events (
     date_occurring
 ) 
 VALUES
-    (1, 'Example Event', 'This is an example event.', 'Noahs house', 1, 1, 'some image', 3, TIMESTAMP("2023-01-10",  "13:10:00"), TIMESTAMP("2023-01-23",  "18:00:00"));
+    ('Example Event', 'This is an example event.', 'Noahs house', 1, 1, 'some image', 3, '2023-01-23 00:00:00', '2023-01-28 12:00:00');

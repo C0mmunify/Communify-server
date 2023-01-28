@@ -1,6 +1,7 @@
-
 const db = require('../dbConfig')
+
 class User {
+
     constructor(data){
         this.id = data.id
         this.name = data.name
@@ -11,6 +12,7 @@ class User {
         this.council = data.council
         this.admin = data.admin
     }
+    
     static findById (id) {
         return new Promise (async (resolve, reject) => {
             try {
@@ -23,4 +25,5 @@ class User {
         });
     }
 }
+
 module.exports = User;

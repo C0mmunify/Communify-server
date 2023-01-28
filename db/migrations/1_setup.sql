@@ -12,7 +12,7 @@ CREATE TABLE users (
     name varchar(255) NOT NULL,
     username varchar(50),
     email varchar(50),
-    phone int,
+    phone varchar(50),
     age int NOT NULL,
     council_id int,
     admin boolean
@@ -25,11 +25,11 @@ CREATE TABLE events (
     title varchar(50) NOT NULL,
     description varchar(1000),
     location varchar(255),
-    council_id int
+    council_id int,
     creator_id int,
     image varchar(1000),
-    spaces int
-    date_created timestamp,
+    spaces int,
+    date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
     date_occurring timestamp
 );
 

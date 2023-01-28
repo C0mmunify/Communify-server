@@ -1,9 +1,14 @@
+const express = require("Express");
+const cors = require("cors");
 
-const express = require('Express');
 const server = express();
+server.use(cors("*"));
+server.use(express.json());
+
+const userRouter = require("./routes/userRoute");
+server.use("/user", userRouter);
+
 const port = 3000;
-const userRoute = require('routes/userRoute');
-
-server.use('/user', userRoute)
-
-server.listen(port, () => console.log(`API is available at http://localhost:${port}`)) 
+server.listen(port, () =>
+    console.log(`API is available at http://localhost:${port}`)
+);
