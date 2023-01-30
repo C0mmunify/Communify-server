@@ -6,7 +6,7 @@ function verifyToken(req, res, next) {
     const header = req.headers["authorization"];
     if (!!header) {
         const token = header.split(" ")[1];
-        jwt.verify(token, "reallyverysupersecuresecret", async (err, data) => {
+        jwt.verify(token, process.env.HMAC_SECRET, async (err, data) => {
             if (err) {
                 res.status(403).json({ err: "Invalid token" });
             } else {
