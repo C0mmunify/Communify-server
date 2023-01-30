@@ -43,7 +43,7 @@ async function login(req, res) {
             const payload = {
                 ...user,
             };
-            let token = jwt.sign(payload, "reallyverysupersecuresecret", {
+            let token = jwt.sign(payload, process.env.HMAC_SECRET, {
                 expiresIn: 1000,
             });
             res.status(200).json({
