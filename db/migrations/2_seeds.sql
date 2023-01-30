@@ -6,7 +6,6 @@ VALUES
 
 INSERT INTO users (
     name, 
-    username, 
     email,
     phone,
     age,
@@ -14,9 +13,9 @@ INSERT INTO users (
     admin
 ) 
 VALUES
-    ('Noah Platton', 'nplatton' ,'noah.platton@getfutureproof.co.uk', '07964170706', 24, 1, True),
-    ('Tom Grainger', 'Graingertom', 'thomas.grainger@getfutureproof.co.uk', null, 24, 2, True),
-    ('Franklyn Asafo', 'asafoadjeif', 'franklyn.asafo@getfutureproof.co.uk', null, 24, 3, True);
+    ('Noah Platton', 'noah.platton@getfutureproof.co.uk', '07964170706', 24, 1, True),
+    ('Tom Grainger', 'thomas.grainger@getfutureproof.co.uk', null, 24, 2, True),
+    ('Franklyn Asafo', 'franklyn.asafo@getfutureproof.co.uk', null, 24, 3, True);
 
 INSERT INTO events (
     title, 

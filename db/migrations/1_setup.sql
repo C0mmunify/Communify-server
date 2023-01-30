@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id serial PRIMARY KEY,
     name varchar(255) NOT NULL,
-    username varchar(50),
     email varchar(50),
     phone varchar(50),
     age int NOT NULL,
