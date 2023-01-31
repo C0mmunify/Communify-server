@@ -28,6 +28,8 @@ CREATE TABLE events (
     creator_id int,
     image varchar(1000),
     spaces int,
+    attendees int,
+    attendee_id varchar FOREIGN KEY REFERENCES attendees(id)   
     date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
     date_occurring timestamp
 );
@@ -66,3 +68,12 @@ CREATE TABLE auth (
     user_id int,
     password_digest varchar(100) NOT NULL
 );
+
+DROP TABLE IF EXISTS attendees;
+
+CREATE TABLE attendees (
+    id serial PRIMARY KEY,
+    user_id varchar FOREIGN KEY REFERENCES users(id),
+    user_name varchar FOREIGN KEY REFERENCES users(name),
+    event_id varchar FOREIGN KEY REFERENCES events(id),
+)
