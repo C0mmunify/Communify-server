@@ -1,11 +1,10 @@
-const express = require('Express');
+const express = require("Express");
+const userControllers = require("../controllers/userControllers");
+const { verifyToken } = require("../middleware/jwtAuth");
+
 const router = express.Router();
-const path = require('path');
-const userControllers = require('../controllers/userControllers');
 
-router.get("/:user_id", userControllers.findById)
+router.get("/:user_id", verifyToken, userControllers.findById);
 // router.patch("/:user_id")
-
-
 
 module.exports = router;

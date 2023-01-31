@@ -11,6 +11,6 @@ services:
   db:
     image: postgres:latest
     volumes:
-      - "./db:/docker-entrypoint-initdb.d/:ro"
+      - "./db/migrations:/docker-entrypoint-initdb.d/:ro"
     environment:
       - POSTGRES_USER=c0mmunify

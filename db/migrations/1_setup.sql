@@ -10,9 +10,8 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
     id serial PRIMARY KEY,
     name varchar(255) NOT NULL,
-    username varchar(50),
     email varchar(50),
-    phone int,
+    phone varchar(50),
     age int NOT NULL,
     council_id int,
     admin boolean
@@ -30,9 +29,9 @@ CREATE TABLE events (
     image varchar(1000),
     spaces int,
     attendees int,
-    date_created timestamp,
-    date_occurring timestamp,
-    id varchar FOREIGN KEY REFERENCES attendees(id)   
+    attendee_id varchar FOREIGN KEY REFERENCES attendees(id)   
+    date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
+    date_occurring timestamp
 );
 
 DROP TABLE IF EXISTS forum_posts;
