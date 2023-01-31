@@ -29,7 +29,7 @@ class Event {
     static findByAttendee (attendee) {
         return new Promise (async (resolve, reject) => {
             try {
-                let eventData = await db.query(`SELECT * FROM events LEFT JOIN `, [ title ]);
+                let eventData = await db.query(`SELECT * FROM events WHERE atten  `, [ attendee ]);
                 let event = new Event(eventData.rows[0]);
                 resolve (event);
             } catch (err) {
