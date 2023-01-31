@@ -25,12 +25,14 @@ CREATE TABLE events (
     title varchar(50) NOT NULL,
     description varchar(1000),
     location varchar(255),
-    council_id int
+    council_id int,
     creator_id int,
     image varchar(1000),
-    spaces int
+    spaces int,
+    attendees int,
     date_created timestamp,
-    date_occurring timestamp
+    date_occurring timestamp,
+    id varchar FOREIGN KEY REFERENCES attendees(id)   
 );
 
 DROP TABLE IF EXISTS forum_posts;
@@ -67,3 +69,12 @@ CREATE TABLE auth (
     user_id int,
     password_digest varchar(100) NOT NULL
 );
+
+DROP TABLE IF EXISTS attendees;
+
+CREATE TABLE attendees (
+    id serial PRIMARY KEY,
+    user_id varchar FOREIGN KEY REFERENCES users(id),
+    user_name varchar FOREIGN KEY REFERENCES users(name),
+    event_id varchar FOREIGN KEY REFERENCES events(id),
+)

@@ -28,8 +28,9 @@ INSERT INTO events (
     creator_id,
     image,
     spaces,
+    attendees,
     date_created,
-    date_occurring
+    date_occurring,
 ) 
 VALUES
-    (1, 'Example Event', 'This is an example event.', 'Noahs house', 1, 1, 'some image', 3, TIMESTAMP("2023-01-10",  "13:10:00"), TIMESTAMP("2023-01-23",  "18:00:00"));
+    (1, 'Example Event', 'This is an example event.', 'Noahs house', 1, 1, 'some image', 3, 2, TIMESTAMP("2023-01-10",  "13:10:00"), TIMESTAMP("2023-01-23",  "18:00:00"));
