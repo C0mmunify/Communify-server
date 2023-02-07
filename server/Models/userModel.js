@@ -68,7 +68,7 @@ class User {
         return new Promise(async (res, rej) => {
             try {
                 let sqlQueryString = utils.generateUpdateQueryString(userData);
-                let updateValues = [this.id].append(Object.values(userData));
+                let updateValues = [this.id].concat(Object.values(userData));
                 let updatedUserData = await db.query(
                     sqlQueryString,
                     updateValues
@@ -81,7 +81,7 @@ class User {
         });
     }
 
-    getPasswordHash() {
+    get passwordHash() {
         return new Promise(async (res, rej) => {
             try {
                 let passwordData = await db.query(
