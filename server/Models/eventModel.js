@@ -26,15 +26,30 @@ class Event {
         });
     }
     
-    static findByAttendee (attendee) {
+    static findByAttendeeId (attendeeId) {
         return new Promise (async (resolve, reject) => {
             try {
-                let eventData = await db.query(`SELECT * FROM events WHERE atten  `, [ attendee ]);
+                let eventData = await db.query(`SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE attendee.user_id;`, [ attendeeId ]);
                 let event = new Event(eventData.rows[0]);
+
                 resolve (event);
+
             } catch (err) {
                 reject('No events with that title found');
             }
         });
     }
+
+    static findById (id) {
+        return new Promise (async (resolve,reject) => {
+            try {
+                let eventData = await db.query(`SELECT * FROM events WHERE id = $1;`, [ id ]);
+                let event = new Event(eventData.rows[0]);
+                resolve (event);
+            } catch (err) {
+                reject('No events with that title found');
+            }
+        })
+    }
+
 }

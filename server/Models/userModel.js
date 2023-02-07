@@ -28,6 +28,20 @@ class User {
         });
     }
 
+    static findByName(name) {
+        return Promise(async (res, rej) => {
+            try {
+                let userName = await db.query(
+                    `SELECT id FROM users WHERE name = $1;`, [name]
+                );
+                let user = new User(userName.rows[0]);
+                resolve(user);
+            } catch (err) {
+                reject({ message: "Name not found: " + err.message });
+            }
+        });
+    }
+
     static findByEmail(email) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -123,6 +137,7 @@ class User {
             }
         });
     }
+
 }
 
 module.exports = User;

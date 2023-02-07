@@ -1,4 +1,5 @@
 const Event = require('../Models/eventModel')
+const User = require('../Models/userModel')
 
 async function findByTitle(req, res) {
     try{
@@ -9,13 +10,14 @@ async function findByTitle(req, res) {
     }
 }
 
-async function findByAttendee(req, res) {
+async function findByAttendeeName(req, res) {
     try{
-        const events = await Event.findByAttendee(req.params.attendees);
-        res.status(200).json(attendees);
+        const userId = await User.findById(req.params.userId);
+        const events = await Event.findByAttendeeId(userId);
+        res.status(200).json(events);
     } catch (err) {
         res.status(404).json(err.message);
     }
 }
 
-module.exports =   findByTitle; findByAttendee
+module.exports =   findByTitle; findByAttendeeName
