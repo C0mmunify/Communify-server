@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --setupFiles ./tests/integration/config.js --watchAll --detectOpenHandles --runInBand --verbose --colors",
+    "coverage": "jest --setupFiles ./tests/integration/config.js --testPathPattern=/integration/ --detectOpenHandles --coverage --colors",
+    "unitTests": "jest --testPathPattern=/unit/ --watchAll --verbose --colors",
+    "unitCoverage": "jest --testPathPattern=/unit/ --watchAll --verbose --coverage --colors"
   },
   "repository": {
     "type": "git",
