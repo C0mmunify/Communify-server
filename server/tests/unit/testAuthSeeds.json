@@ -1,0 +1,22 @@
+[
+    {
+        "user_id": 1,
+        "password_digest": "$2y$10$Trhr2m0E9XhGjIxwc89eaeIBc23ELsdMowRcGY93ib1mI/3k9cPM6"
+    },
+    {
+        "user_id": 2,
+        "password_digest": "$2y$10$0tPH/0f8Lqc6M5CQ62whVu7MJwD.vE8ym8wp9VJe98k.wdySRzHhO"
+    },
+    {
+        "user_id": 3,
+        "password_digest": "$2y$10$9OZZGLbJyvieuryFLsG9iu4F.yCGTaxFW/MnXpBREZGj/X/CcTZHm"
+    },
+    {
+        "user_id": 4,
+        "password_digest": "$2y$10$OLlRRqQESeexFJBhSggWDOs3BPwrstPxsP5cfBn3OUAcWevNg0I0u"
+    },
+    {
+        "user_id": 5,
+        "password_digest": "$2y$10$UtTqp6Cp4OjmFdw1JrkPvu/pdd9WLXEPr6kHgY8GDYMxY1TUCFlN."
+    }
+]
