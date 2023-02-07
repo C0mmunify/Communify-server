@@ -1,10 +1,3 @@
-DROP TABLE IF EXISTS council;
-
-CREATE TABLE council (
-    id serial PRIMARY KEY,
-    area varchar(50) NOT NULL
-);
-
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -13,7 +6,7 @@ CREATE TABLE users (
     email varchar(50),
     phone varchar(50),
     age int NOT NULL,
-    council_id int,
+    council varchar(100),
     admin boolean
 );
 
@@ -24,12 +17,10 @@ CREATE TABLE events (
     title varchar(50) NOT NULL,
     description varchar(1000),
     location varchar(255),
-    council_id int,
+    council varchar(100),
     creator_id int,
-    image varchar(1000),
-    spaces int,
-    attendees int,
-    attendee_id varchar FOREIGN KEY REFERENCES attendees(id)   
+    spaces_total int,
+    spaces_remaining int,
     date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
     date_occurring timestamp
 );
@@ -73,7 +64,8 @@ DROP TABLE IF EXISTS attendees;
 
 CREATE TABLE attendees (
     id serial PRIMARY KEY,
-    user_id varchar FOREIGN KEY REFERENCES users(id),
-    user_name varchar FOREIGN KEY REFERENCES users(name),
-    event_id varchar FOREIGN KEY REFERENCES events(id),
-)
+    user_id int,
+    event_id int,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (event_id) REFERENCES events(id)
+);
