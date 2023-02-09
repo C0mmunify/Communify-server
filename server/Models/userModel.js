@@ -32,12 +32,13 @@ class User {
         return Promise(async (res, rej) => {
             try {
                 let userName = await db.query(
-                    `SELECT id FROM users WHERE name = $1;`, [name]
+                    `SELECT id FROM users WHERE name = $1;`,
+                    [name]
                 );
                 let user = new User(userName.rows[0]);
-                resolve(user);
+                res(user);
             } catch (err) {
-                reject({ message: "Name not found: " + err.message });
+                rej({ message: "Name not found: " + err.message });
             }
         });
     }
@@ -133,11 +134,10 @@ class User {
                 );
                 res("Password updated successfully.");
             } catch (err) {
-                rej("Failed to update password: " + err.message);
+                rej({ message: "Failed to update password: " + err.message });
             }
         });
     }
-
 }
 
 module.exports = User;
