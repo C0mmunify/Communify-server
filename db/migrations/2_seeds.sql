@@ -4,12 +4,13 @@ INSERT INTO users (
     phone,
     age,
     council,
+    profile_image,
     admin
 ) 
 VALUES
-    ('Noah Platton', 'noah.platton@getfutureproof.co.uk', '07964170706', 24, 'council 1', True),
-    ('Tom Grainger', 'thomas.grainger@getfutureproof.co.uk', null, 24, 'council 2', True),
-    ('Franklyn Asafo', 'franklyn.asafo@getfutureproof.co.uk', null, 24, 'council 3', True);
+    ('Noah Platton', 'noah.platton@getfutureproof.co.uk', '07964170706', 24, 'council 1', 'image 1', true),
+    ('Tom Grainger', 'thomas.grainger@getfutureproof.co.uk', null, 24, 'council 2', 'image 2', true),
+    ('Franklyn Asafo', 'franklyn.asafo@getfutureproof.co.uk', null, 24, 'council 3', 'image 3', true);
 
 INSERT INTO events (
     title, 

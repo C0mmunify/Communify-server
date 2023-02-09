@@ -9,6 +9,7 @@ class User {
         this.phone = data.phone;
         this.age = data.age;
         this.council = data.council;
+        this.profile_image = data.profile_image;
         this.admin = data.admin;
     }
 
@@ -78,7 +79,7 @@ class User {
                 let params = Object.values(userData);
                 params.pop();
                 let newUserData = await db.query(
-                    `INSERT INTO users (name,email,phone,age,council,admin) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`,
+                    `INSERT INTO users (name,email,age,council,admin) VALUES ($1,$2,$3,$4,$5) RETURNING *;`,
                     params
                 );
                 let newUser = new User(newUserData.rows[0]);

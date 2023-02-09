@@ -7,6 +7,7 @@ CREATE TABLE users (
     phone varchar(50),
     age int NOT NULL,
     council varchar(100),
+    profile_image varchar(1000),
     admin boolean
 );
 
