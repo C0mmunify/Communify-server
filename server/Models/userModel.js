@@ -8,9 +8,20 @@ class User {
         this.email = data.email;
         this.phone = data.phone;
         this.age = data.age;
-        this.address = data.address;
         this.council = data.council;
         this.admin = data.admin;
+    }
+
+    static findAllUsers() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let userData = await db.query(`SELECT * FROM users`);
+                let users = new User(userData.rows[0]);
+                resolve(users);
+            } catch (err) {
+                reject({ message: "Admin required for access" + err.message });
+            }
+        });
     }
 
     static findById(id) {
@@ -61,7 +72,7 @@ class User {
         });
     }
 
-    static create(userData, passwordDigest) {
+    static createUser(userData, passwordDigest) {
         return new Promise(async (res, rej) => {
             try {
                 let params = Object.values(userData);
@@ -79,11 +90,12 @@ class User {
         });
     }
 
-    update(userData) {
+    static updateUser(userData) {
         return new Promise(async (res, rej) => {
             try {
-                let sqlQueryString = utils.generateUpdateQueryString(userData);
-                let updateValues = [this.id].concat(Object.values(userData));
+                let sqlQueryString =
+                    utils.generateUpdateQueryStringUsers(userData);
+                let updateValues = [this.id].append(Object.values(userData));
                 let updatedUserData = await db.query(
                     sqlQueryString,
                     updateValues
@@ -92,6 +104,21 @@ class User {
                 res(updatedUser);
             } catch (err) {
                 rej(err);
+            }
+        });
+    }
+
+    static deleteUser(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let userData = await db.query(
+                    `DELETE * FROM users WHERE id = $1;`,
+                    [id]
+                );
+                let user = new User(userData.rows[0]);
+                resolve(user);
+            } catch (err) {
+                reject({ message: "User not found: " + err.message });
             }
         });
     }
