@@ -13,7 +13,7 @@ async function register(req, res) {
         }
         const salt = await bcryptjs.genSalt();
         const hashedPassword = await bcryptjs.hash(req.body.password, salt);
-        const result = await User.create(
+        const result = await User.createUser(
             {
                 ...req.body,
             },

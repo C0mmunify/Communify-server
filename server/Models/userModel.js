@@ -78,7 +78,7 @@ class User {
                 let params = Object.values(userData);
                 params.pop();
                 let newUserData = await db.query(
-                    `INSERT INTO users (name,email,phone,age,council_id,admin) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`,
+                    `INSERT INTO users (name,email,phone,age,council,admin) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`,
                     params
                 );
                 let newUser = new User(newUserData.rows[0]);
