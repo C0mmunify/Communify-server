@@ -72,8 +72,6 @@ CREATE TABLE auth (
 DROP TABLE IF EXISTS attendees;
 
 CREATE TABLE attendees (
-    id serial PRIMARY KEY,
     user_id varchar FOREIGN KEY REFERENCES users(id),
-    user_name varchar FOREIGN KEY REFERENCES users(name),
     event_id varchar FOREIGN KEY REFERENCES events(id),
 )
