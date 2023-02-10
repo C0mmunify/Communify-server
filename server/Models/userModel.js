@@ -96,7 +96,9 @@ class User {
             try {
                 let sqlQueryString =
                     utils.generateUpdateQueryStringUsers(userData);
-                let updateValues = [this.id].append(Object.values(userData));
+                let updateValues = [userData.id].concat(
+                    Object.values(userData)
+                );
                 let updatedUserData = await db.query(
                     sqlQueryString,
                     updateValues

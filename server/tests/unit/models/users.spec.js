@@ -87,7 +87,7 @@ describe("User Model", () => {
             jest.spyOn(db, "query").mockResolvedValueOnce({
                 rows: [{ ...newUser, id: 1 }],
             });
-            const result = await User.create(newUser);
+            const result = await User.createUser(newUser);
             expect(result).toBeInstanceOf(User);
             expect(result).toHaveProperty("id");
             expect(result.id).toBe(1);
@@ -97,7 +97,7 @@ describe("User Model", () => {
             jest.spyOn(db, "query").mockImplementation(() => {
                 throw new Error("example error message");
             });
-            const result = await User.create({}, "fakepassword");
+            const result = await User.createUser({}, "fakepassword");
             expect(result.message).toMatch(/User Creation Failed/);
         });
     });
@@ -113,17 +113,6 @@ describe("User Model", () => {
                 council: "Test Council 3",
                 admin: false,
             };
-            let user = new User(userData);
-            // let updatedUser = {
-            //     id: 1,
-            //     name: "Test User 1",
-            //     email: "newemail@email.com",
-            //     phone: 1234567890,
-            //     age: 14,
-            //     council: "Test Council 3",
-            //     admin: false,
-            // };
-            expect(user.email).toBe("oldemail@email.com");
             let updatedUserData = {
                 ...userData,
                 email: "newemail@email.com",
@@ -131,7 +120,7 @@ describe("User Model", () => {
             jest.spyOn(db, "query").mockResolvedValueOnce({
                 rows: [updatedUserData],
             });
-            const result = await user.update(updatedUserData);
+            const result = await User.updateUser(updatedUserData);
             expect(result).toBeInstanceOf(User);
             expect(result.id).toBe(1);
             expect(result.email).toBe("newemail@email.com");

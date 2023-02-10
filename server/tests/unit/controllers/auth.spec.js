@@ -106,7 +106,7 @@ describe("auth controller", () => {
                 password: "testword",
             };
             jest.spyOn(User, "findByEmail").mockResolvedValueOnce(false);
-            jest.spyOn(User, "create").mockResolvedValue("User created!");
+            jest.spyOn(User, "createUser").mockResolvedValue("User created!");
             const mockReq = { body: testUser };
             await authController.register(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);
@@ -128,7 +128,7 @@ describe("auth controller", () => {
                 username: "tester",
                 password: "testword",
             };
-            jest.spyOn(User, "create").mockImplementation(() => {
+            jest.spyOn(User, "createUser").mockImplementation(() => {
                 throw new Error();
             });
             const mockReq = { body: testUser };
