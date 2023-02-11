@@ -1,4 +1,4 @@
-const express = require("Express");
+const express = require("express");
 const userControllers = require("../controllers/userControllers");
 const { verifyToken } = require("../middleware/jwtAuth");
 
