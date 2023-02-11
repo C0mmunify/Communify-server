@@ -19,6 +19,7 @@ services:
     environment:
       - POSTGRES_DB=ourdb
       - POSTGRES_PASSWORD=verysecurepassword
+      - POSTGRES_USER=c0mmunify
 volumes:
   test_db:
 networks:

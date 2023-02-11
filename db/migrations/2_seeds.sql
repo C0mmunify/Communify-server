@@ -18,11 +18,12 @@ INSERT INTO events (
     location,
     council,
     creator_id,
+    image,
     spaces_total,
     spaces_remaining,
     date_created,
     date_occurring
 ) 
 VALUES
-    ('Example Event', 'This is an example event.', 'Noahs house', 'council 1', 1, 3, 2, '2023-01-23 00:00:00', '2023-01-28 12:00:00');
+    ('Example Event', 'This is an example event.', 'Noahs house', 'council 1', 1, null, 3, 2, '2023-01-23 00:00:00', '2023-01-28 12:00:00');
 

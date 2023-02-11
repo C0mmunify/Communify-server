@@ -20,6 +20,7 @@ CREATE TABLE events (
     location varchar(255),
     council varchar(100),
     creator_id int,
+    image varchar(1000),
     spaces_total int,
     spaces_remaining int,
     date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
