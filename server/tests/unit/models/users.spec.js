@@ -14,6 +14,16 @@ describe("User Model", () => {
 
     afterAll(() => jest.resetAllMocks());
 
+    describe("findAllUsers", () => {
+        test("it resolves with user data on successful db query", async () => {
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: testUsers,
+            });
+            const result = await User.findAllUsers();
+            expect(result).toHaveLength(5);
+        });
+    });
+
     describe("findById", () => {
         test("it resolves with user data on successful db query", async () => {
             jest.spyOn(db, "query").mockResolvedValueOnce({
@@ -74,7 +84,7 @@ describe("User Model", () => {
         });
     });
 
-    describe("create", () => {
+    describe("createUser", () => {
         test("it resolves with newly created user data", async () => {
             let newUser = {
                 name: "Test User 1",
@@ -102,7 +112,7 @@ describe("User Model", () => {
         });
     });
 
-    describe("update", () => {
+    describe("updateUser", () => {
         test("it resolves with updated user data", async () => {
             let userData = {
                 id: 1,
@@ -124,6 +134,32 @@ describe("User Model", () => {
             expect(result).toBeInstanceOf(User);
             expect(result.id).toBe(1);
             expect(result.email).toBe("newemail@email.com");
+        });
+
+        xtest("it resolves with error message on failure", async () => {
+            let testUser = new User();
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error("example error message");
+            });
+            const result = await testUser.update({});
+            expect(result).toBeInstanceOf(Error);
+        });
+    });
+
+    describe("deleteUser", () => {
+        test("it resolves with successful deletion message", async () => {
+            let userData = {
+                id: 1,
+                name: "Test User 1",
+                email: "testuser@email.com",
+                phone: 1234567890,
+                age: 14,
+                council: "Test Council 3",
+                admin: false,
+            };
+            jest.spyOn(db, "query").mockResolvedValueOnce("User deleted");
+            const result = await User.deleteUser(userData.id);
+            expect(result).toMatch("User deleted");
         });
 
         xtest("it resolves with error message on failure", async () => {

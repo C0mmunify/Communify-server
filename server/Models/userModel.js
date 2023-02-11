@@ -17,10 +17,10 @@ class User {
         return new Promise(async (resolve, reject) => {
             try {
                 let userData = await db.query(`SELECT * FROM users`);
-                let users = new User(userData.rows[0]);
+                let users = userData["rows"].map((user) => new User(user));
                 resolve(users);
             } catch (err) {
-                reject({ message: "Admin required for access" + err.message });
+                reject({ message: err.message });
             }
         });
     }
@@ -114,14 +114,10 @@ class User {
     static deleteUser(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                let userData = await db.query(
-                    `DELETE * FROM users WHERE id = $1;`,
-                    [id]
-                );
-                let user = new User(userData.rows[0]);
-                resolve(user);
+                await db.query(`DELETE * FROM users WHERE id = $1;`, [id]);
+                resolve("User deleted");
             } catch (err) {
-                reject({ message: "User not found: " + err.message });
+                reject("Failed to delete user: " + err.message);
             }
         });
     }
