@@ -1,5 +1,4 @@
-const json = require("jsonwebtoken")
-
+const jwt_decode = require("jwt-decode");
 
 function generateUpdateQueryStringUsers(userData) {
     let sqlQueryString = [`UPDATE users SET`];
@@ -17,31 +16,34 @@ function generateUpdateQueryStringUsers(userData) {
 function generateUpdateQueryStringEvents(eventData) {
     let sqlQueryString = [`UPDATE events SET`];
     let setStringValues = [];
-    Object.keys(eventData)
-        .shift()
-        .forEach(function (key, i) {
-            setStringValues.push(key + " = ($" + (i + 1) + ")");
-        });
+    let keys = Object.keys(eventData);
+    keys.shift();
+    keys.forEach(function (key, i) {
+        setStringValues.push(key + " = ($" + (i + 1) + ")");
+    });
     sqlQueryString.push(setStringValues.join(", "));
     sqlQueryString.push(`WHERE id = $1 RETURNING *;`);
     return sqlQueryString.join(" ");
 }
 
-function generateFindByAttendeeIdQueryString ( attendeeId) {
+function generateFindByAttendeeIdQueryString(attendeeId) {
     // take the ID of arrays from model and generate an SQL query string from it
-    let setStringValues = join("','",attendeeId);
-    let sqlQueryString = [`SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE id IN ('$setStringValues')`];
+    let setStringValues = join("','", attendeeId);
+    let sqlQueryString = [
+        `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE id IN ('$setStringValues')`,
+    ];
     // sqlQueryString.push(setStringValues)
-    return sqlQueryString
+    return sqlQueryString;
 }
 
-function decodeJwtToken(token)  {
-    return json.verify(token, process.env.HMAC_SECRET);
+function decodeJwtToken(token) {
+    let decodedToken = jwt_decode(token);
+    return decodedToken;
 }
-
 
 module.exports = {
-    generateUpdateQueryStringUsers, 
+    generateUpdateQueryStringUsers,
     generateUpdateQueryStringEvents,
-    generateFindByAttendeeIdQueryString, decodeJwtToken
+    generateFindByAttendeeIdQueryString,
+    decodeJwtToken,
 };
