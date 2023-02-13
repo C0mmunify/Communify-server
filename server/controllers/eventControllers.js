@@ -47,8 +47,8 @@ async function findByArea(req, res) {
     try{
         const token = req.headers["authorization"].split(" ")[1];
         userData = utils.decodeJwtToken(token)
-        if (userData.area) {
-        const events = await Event.findByArea(userData.area);
+        if (userData.council) {
+        const events = await Event.findByArea(userData.council);
         res.status(200).json(events)}
     } catch (err) {
         res.status(404).json(err.message);
