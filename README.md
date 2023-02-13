@@ -51,4 +51,6 @@ Note: Press `Ctrl` + `C` to terminate the docker container
 
 # Database Schema
 
+Database URL: https://console.neon.tech/app/projects/late-meadow-436645
+
 # Routes

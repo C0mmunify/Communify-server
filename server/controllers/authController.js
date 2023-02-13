@@ -13,7 +13,7 @@ async function register(req, res) {
         }
         const salt = await bcryptjs.genSalt();
         const hashedPassword = await bcryptjs.hash(req.body.password, salt);
-        const result = await User.create(
+        const result = await User.createUser(
             {
                 ...req.body,
             },
@@ -34,7 +34,7 @@ async function login(req, res) {
             throw new Error("No password provided");
         }
         const user = await User.findByEmail(req.body.email);
-        const storedPassword = await user.getPasswordHash();
+        const storedPassword = await user.passwordHash;
         const authed = await bcryptjs.compare(
             req.body.password,
             storedPassword
@@ -54,6 +54,7 @@ async function login(req, res) {
             throw new Error("Incorrect password");
         }
     } catch (err) {
+        // res.status(401);
         res.status(401).json({ error: err.message });
     }
 }

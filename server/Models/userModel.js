@@ -1,4 +1,3 @@
-const { deleteUser } = require("../controllers/userControllers");
 const db = require("../dbConfig");
 const utils = require("../utils");
 
@@ -9,8 +8,8 @@ class User {
         this.email = data.email;
         this.phone = data.phone;
         this.age = data.age;
-        this.address = data.address;
         this.council = data.council;
+        this.profile_image = data.profile_image;
         this.admin = data.admin;
     }
 
@@ -18,13 +17,12 @@ class User {
         return new Promise(async (resolve, reject) => {
             try {
                 let userData = await db.query(`SELECT * FROM users`);
-                let users = new User(userData.rows[0]);
-                resolve(users);                    
-                      
-            } catch(err) {
-                reject({ message: "Admin required for access" + err.message});
+                let users = userData["rows"].map((user) => new User(user));
+                resolve(users);
+            } catch (err) {
+                reject({ message: err.message });
             }
-        })
+        });
     }
 
     static findById(id) {
@@ -43,15 +41,16 @@ class User {
     }
 
     static findByName(name) {
-        return Promise(async (resolve, reject) => {
+        return Promise(async (res, rej) => {
             try {
                 let userName = await db.query(
-                    `SELECT id FROM users WHERE name = $1;`, [name]
+                    `SELECT id FROM users WHERE name = $1;`,
+                    [name]
                 );
                 let user = new User(userName.rows[0]);
-                resolve(user);
+                res(user);
             } catch (err) {
-                reject({ message: "Name not found: " + err.message });
+                rej({ message: "Name not found: " + err.message });
             }
         });
     }
@@ -80,7 +79,7 @@ class User {
                 let params = Object.values(userData);
                 params.pop();
                 let newUserData = await db.query(
-                    `INSERT INTO users (name,email,phone,age,council_id,admin) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *;`,
+                    `INSERT INTO users (name,email,age,council,admin) VALUES ($1,$2,$3,$4,$5) RETURNING *;`,
                     params
                 );
                 let newUser = new User(newUserData.rows[0]);
@@ -95,8 +94,11 @@ class User {
     static updateUser(userData) {
         return new Promise(async (res, rej) => {
             try {
-                let sqlQueryString = utils.generateUpdateQueryStringUsers(userData);
-                let updateValues = [this.id].append(Object.values(userData));
+                let sqlQueryString =
+                    utils.generateUpdateQueryStringUsers(userData);
+                let updateValues = [userData.id].concat(
+                    Object.values(userData)
+                );
                 let updatedUserData = await db.query(
                     sqlQueryString,
                     updateValues
@@ -112,19 +114,15 @@ class User {
     static deleteUser(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                let userData = await db.query(
-                    `DELETE * FROM users WHERE id = $1;`,
-                    [id]
-                );
-                let user = new User(userData.rows[0]);
-                resolve(user);
+                await db.query(`DELETE * FROM users WHERE id = $1;`, [id]);
+                resolve("User deleted");
             } catch (err) {
-                reject({ message: "User not found: " + err.message });
+                reject("Failed to delete user: " + err.message);
             }
         });
     }
 
-    getPasswordHash() {
+    get passwordHash() {
         return new Promise(async (res, rej) => {
             try {
                 let passwordData = await db.query(
@@ -162,11 +160,10 @@ class User {
                 );
                 res("Password updated successfully.");
             } catch (err) {
-                rej("Failed to update password: " + err.message);
+                rej({ message: "Failed to update password: " + err.message });
             }
         });
     }
-
 }
 
 module.exports = User;
