@@ -1,6 +1,8 @@
 const db = require("../dbConfig");
 const utils = require("../utils");
 
+//Change for Change sake
+
 class User {
     constructor(data) {
         this.id = data.id;
