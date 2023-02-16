@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const utils = require("../utils");
+const utils = require("../utilities/queryUtils");
 
 async function findAllUsers(req, res) {
     try {
