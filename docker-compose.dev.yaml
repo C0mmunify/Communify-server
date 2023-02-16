@@ -4,10 +4,10 @@ services:
     ports:
       - 3000:3000
     environment:
-      - PGUSER=c0mmunify
-      - PGHOST=db
-      - PGPASSWORD=verysecurepassword
-      - PGDATABASE=ourdb
+      - PGUSER=nplatton
+      - PGHOST=ep-divine-rain-338764.eu-central-1.aws.neon.tech
+      - PGPASSWORD=oFxI9SdRg2kZ
+      - PGDATABASE=neondb
       - PGPORT=5432
     depends_on:
       - db
@@ -18,8 +18,8 @@ services:
     volumes:
       - "dbdata:/var/lib/postgresql/data"
     environment:
-      - POSTGRES_DB=ourdb
-      - POSTGRES_PASSWORD=verysecurepassword
+      - POSTGRES_DB=neondb
+      - POSTGRES_PASSWORD=oFxI9SdRg2kZ
 volumes:
   dbdata:
 networks:

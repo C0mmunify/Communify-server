@@ -4,8 +4,8 @@
   "description": "Communify App server",
   "main": "index.js",
   "scripts": {
-    "start": "node ./server/index.js --legacy-watch",
-    "dev": "nodemon ./server/index.js --legacy-watch",
+    "start": "node ./server/index.js",
+    "dev": "nodemon ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +25,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
+    "jwt-decode": "^3.1.2",
     "pg": "^8.8.0"
   },
   "devDependencies": {
