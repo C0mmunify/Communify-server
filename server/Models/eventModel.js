@@ -1,5 +1,6 @@
 const db = require("../dbConfig");
-const utils = require("../utils");
+const queryUtils = require("../utilities/queryUtils");
+const filterUtils = require("../utilities/filterUtils")
 
 class Event {
     constructor(data) {
@@ -14,6 +15,7 @@ class Event {
         this.spacesRemaining = data.spaces_remaining;
         this.dateCreated = data.date_created;
         this.dateOcurring = data.date_occurring;
+        this.dateEnding = data.date_ending;
     }
 
     static findAllEvents() {
@@ -24,6 +26,21 @@ class Event {
                     (event) => new Event(event)
                 );
                 resolve(events);
+            } catch (err) {
+                reject({ message: err.message });
+            }
+        });       
+    }
+
+    static findAllCurrentEvents() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let eventData = await db.query(`SELECT * FROM EVENTS `);
+                const events = eventData["rows"].map(
+                    (event) => new Event(event)
+                );
+                const filteredEvents = filterUtils.filterExpiredEvents(events) 
+                resolve(filteredEvents);
             } catch (err) {
                 reject({ message: err.message });
             }
@@ -38,7 +55,8 @@ class Event {
                     [title]
                 );
                 let event = new Event(eventData.rows[0]);
-                resolve(event);
+                const filteredEvents = filterUtils.filterExpiredEvents(event) 
+                resolve(filteredEvents);
             } catch (err) {
                 reject("No event found with given title");
             }

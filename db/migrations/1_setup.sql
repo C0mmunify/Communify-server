@@ -24,7 +24,8 @@ CREATE TABLE events (
     spaces_total int,
     spaces_remaining int,
     date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
-    date_occurring timestamp
+    date_occurring timestamp,
+    date_ending timestamp,
 );
 
 DROP TABLE IF EXISTS forum_posts;

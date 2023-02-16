@@ -1,5 +1,5 @@
 const db = require("../dbConfig");
-const utils = require("../utils");
+const utils = require("../utilities/queryUtils");
 
 class User {
     constructor(data) {
