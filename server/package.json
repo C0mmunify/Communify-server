@@ -4,8 +4,8 @@
   "description": "Communify App server",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node ./index.js --legacy-watch",
+    "dev": "nodemon ./index.js --legacy-watch",
     "test": "jest --setupFiles ./tests/integration/config.js --watchAll --detectOpenHandles --runInBand --verbose --colors",
     "coverage": "jest --setupFiles ./tests/integration/config.js --testPathPattern=/integration/ --detectOpenHandles --coverage --colors",
     "unitTests": "jest --testPathPattern=/unit/ --watchAll --verbose --colors",
@@ -29,10 +29,10 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
-    "loader": "^2.1.1",
     "pg": "^8.8.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.20.12",
     "coverage": "^0.4.1",
     "jest": "^29.3.1",
     "nodemon": "^2.0.20",
