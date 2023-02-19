@@ -19,7 +19,8 @@ async function findAllEvents(req, res) {
 
 async function findByTitle(req, res) {
     try {
-        const events = await Event.findByTitle(req.params.event_title);
+        let decodedTitle = decodeURI(req.params.event_title);
+        const events = await Event.findByTitle(decodedTitle);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json(err.message);
@@ -28,7 +29,8 @@ async function findByTitle(req, res) {
 
 async function findByAttendeeName(req, res) {
     try {
-        const userId = await User.findByName(req.params.user_name);
+        let decodedName = decodeURI(req.params.user_name);
+        const userId = await User.findByName(decodedName);
         const events = await Event.findByAttendeeId(userId);
         res.status(200).json(events);
     } catch (err) {
