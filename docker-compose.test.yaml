@@ -11,6 +11,7 @@ services:
       - PGPORT=5432
     depends_on:
       - db
+    tty: true
 
   db:
     container_name: c0mmunify_test_db
