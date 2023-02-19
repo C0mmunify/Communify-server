@@ -27,7 +27,8 @@ async function findById(req, res) {
 
 async function findByName(req, res) {
     try {
-        const user = await User.findByName(req.params.user_name);
+        let decodedName = decodeURI(req.params.user_name);
+        const user = await User.findByName(decodedName);
         res.status(200).json(user);
     } catch (err) {
         res.status(404).json(err.message);

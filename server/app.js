@@ -6,7 +6,7 @@ server.use(cors("*"));
 server.use(express.json());
 
 const userRouter = require("./routes/userRoute");
-server.use("/user", userRouter);
+server.use("/users", userRouter);
 
 const authRouter = require("./routes/authRoutes");
 server.use("/auth", authRouter);
