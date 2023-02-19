@@ -1,3 +1,5 @@
+const bcryptjs = require("bcryptjs");
+
 const User = require("../models/userModel");
 const utils = require("../utilities/queryUtils");
 
@@ -28,6 +30,7 @@ async function findById(req, res) {
 async function findByName(req, res) {
     try {
         let decodedName = decodeURI(req.params.user_name);
+        console.log(decodedName);
         const user = await User.findByName(decodedName);
         res.status(200).json(user);
     } catch (err) {
@@ -59,10 +62,10 @@ async function updatePass(req, res) {
 
 async function deleteUser(req, res) {
     try {
-        const user = await User.deleteUser(req.params.user_id);
-        res.status(200).json(user);
+        await User.deleteUser(req.params.user_id);
+        res.status(200);
     } catch (err) {
-        res.status(400).json(err.message);
+        res.status(400).json(err);
     }
 }
 

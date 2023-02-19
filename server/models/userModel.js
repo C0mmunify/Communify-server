@@ -116,7 +116,7 @@ class User {
     static deleteUser(id) {
         return new Promise(async (resolve, reject) => {
             try {
-                await db.query(`DELETE * FROM users WHERE id = $1;`, [id]);
+                await db.query(`DELETE FROM users WHERE id = $1;`, [id]);
                 resolve("User deleted");
             } catch (err) {
                 reject("Failed to delete user: " + err.message);
