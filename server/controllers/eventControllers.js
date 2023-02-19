@@ -29,7 +29,8 @@ async function findByTitle(req, res) {
 
 async function findByAttendeeName(req, res) {
     try {
-        const userId = await User.findByName(req.params.user_name);
+        let decodedName = decodeURI(req.params.user_name);
+        const userId = await User.findByName(decodedName);
         const events = await Event.findByAttendeeId(userId);
         res.status(200).json(events);
     } catch (err) {
