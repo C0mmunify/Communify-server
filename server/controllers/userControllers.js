@@ -53,7 +53,6 @@ async function updatePass(req, res) {
         const salt = await bcryptjs.genSalt();
         const hashedPassword = await bcryptjs.hash(req.body.password, salt);
         const result = await user.updatePassword(hashedPassword);
-        console.log(result);
         res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err.message);
