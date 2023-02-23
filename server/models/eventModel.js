@@ -83,7 +83,7 @@ class Event {
     static createEvent(eventData) {
         return new Promise(async (resolve, reject) => {
             try {
-                data = miscUtils.setDates(eventData);
+                let data = miscUtils.setDates(eventData);
                 let params = Object.values(data);
                 let newEventData = await db.query(
                     `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occuring,date_ending,date_created) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;`,
