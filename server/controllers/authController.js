@@ -34,6 +34,9 @@ async function login(req, res) {
             throw new Error("No password provided");
         }
         const user = await User.findByEmail(req.body.email);
+        if (!user) {
+            throw new Error("No user with given email.");
+        }
         const storedPassword = await user.passwordHash;
         const authed = await bcryptjs.compare(
             req.body.password,

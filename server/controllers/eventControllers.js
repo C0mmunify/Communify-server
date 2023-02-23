@@ -18,17 +18,18 @@ async function findAllEvents(req, res) {
 
 async function findById(req, res) {
     try {
-        const events = await Event.findById(req.params.event_id);
-        res.status(200).json(events);
+        const event = await Event.findById(req.params.event_id);
+        res.status(200).json(event);
     } catch (err) {
         res.status(404).json(err.message);
     }
 }
 
-async function findByCreator(req, res) {
+async function findByIdWithAttendees(req, res) {
     try {
-        const events = await Event.findByCreator(req.params.user_id);
-        res.status(200).json(events);
+        const event = await Event.findById(req.params.event_id);
+        event.attendees = await event.getAttendees();
+        res.status(200).json(event);
     } catch (err) {
         res.status(404).json(err.message);
     }
@@ -38,18 +39,6 @@ async function findByTitle(req, res) {
     try {
         let decodedTitle = decodeURI(req.params.event_title);
         const events = await Event.findByTitle(decodedTitle);
-        res.status(200).json(events);
-    } catch (err) {
-        res.status(404).json(err.message);
-    }
-}
-
-async function findByAttendeeName(req, res) {
-    try {
-        let decodedName = decodeURI(req.params.user_name);
-        const user = await User.findByName(decodedName);
-        console.log(user);
-        const events = await Event.findByAttendeeId(user.id);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json(err.message);
@@ -77,6 +66,20 @@ async function createEvent(req, res) {
     }
 }
 
+async function addAttendee(req, res) {
+    try {
+        const event = await Event.findById(req.params.event_id);
+        let attending = await event.checkAttendance(req.body.user_id);
+        if (attending) {
+            throw new Error("Already attending.");
+        }
+        await event.addAttendee(req.body.user_id);
+        res.status(200);
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+}
+
 async function updateEvent(req, res) {
     try {
         let eventData = {
@@ -99,14 +102,25 @@ async function deleteEvent(req, res) {
     }
 }
 
+async function removeAttendee(req, res) {
+    try {
+        const event = await Event.findById(req.params.event_id);
+        await event.deleteAttendee(req.params.user_id);
+        res.status(200);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+}
+
 module.exports = {
     findByTitle,
-    findByAttendeeName,
     findById,
-    findByCreator,
+    findByIdWithAttendees,
     findAllEvents,
     // findByArea,
     createEvent,
+    addAttendee,
     deleteEvent,
     updateEvent,
+    removeAttendee,
 };

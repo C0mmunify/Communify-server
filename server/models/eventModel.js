@@ -1,5 +1,6 @@
 const db = require("../dbConfig");
-const utils = require("../utilities/filterUtils");
+// const utils = require("../utilities/filterUtils");
+const User = require("./userModel");
 const queryUtils = require("../utilities/queryUtils");
 const miscUtils = require("../utilities/miscUtils");
 
@@ -136,10 +137,74 @@ class Event {
     static deleteEvent(event_id) {
         return new Promise(async (resolve, reject) => {
             try {
-                await db.query(`DROP * FROM events WHERE id = $1;`, [event_id]);
+                await db.query(`DELETE FROM events WHERE id = $1;`, [event_id]);
                 resolve("Event deleted");
             } catch (err) {
                 reject("Failed to delete event: " + err);
+            }
+        });
+    }
+
+    getAttendees() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const attendeeData = await db.query(
+                    `SELECT users.* FROM attendees JOIN users ON attendees.user_id=users.id WHERE attendees.event_id = $1;`,
+                    [this.id]
+                );
+                let attendees = attendeeData["rows"].map(
+                    (user) => new User(user)
+                );
+                resolve(attendees);
+            } catch (err) {
+                reject({ message: "Could not add attendee: " + err.message });
+            }
+        });
+    }
+
+    checkAttendance(user_id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let response = await db.query(
+                    `SELECT * FROM attendees WHERE event_id = $1 AND user_id = $2;`,
+                    [this.id, user_id]
+                );
+                if (response["rows"].length != 0) {
+                    resolve(true);
+                }
+                resolve(false);
+            } catch (err) {
+                reject({ message: err.message });
+            }
+        });
+    }
+
+    addAttendee(user_id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await db.query(
+                    `INSERT INTO attendees (event_id,user_id) VALUES ($1,$2);`,
+                    [this.id, user_id]
+                );
+                resolve("Success");
+            } catch (err) {
+                reject({ message: "Could not add attendee: " + err.message });
+            }
+        });
+    }
+
+    deleteAttendee(user_id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await db.query(
+                    `DELETE FROM attendees WHERE event_id = $1 AND user_id = $2;`,
+                    [this.id, user_id]
+                );
+                resolve("Success");
+            } catch (err) {
+                reject({
+                    message: "Could not remove attendee: " + err.message,
+                });
             }
         });
     }

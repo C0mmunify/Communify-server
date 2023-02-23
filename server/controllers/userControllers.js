@@ -1,6 +1,7 @@
 const bcryptjs = require("bcryptjs");
 
 const User = require("../models/userModel");
+const Event = require("../models/eventModel");
 const authUtils = require("../utilities/authUtils");
 
 async function findAllUsers(req, res) {
@@ -31,6 +32,27 @@ async function findByName(req, res) {
         let decodedName = decodeURI(req.params.user_name);
         const user = await User.findByName(decodedName);
         res.status(200).json(user);
+    } catch (err) {
+        res.status(404).json(err.message);
+    }
+}
+
+async function findEventsByCreator(req, res) {
+    try {
+        const events = await Event.findByCreator(req.params.user_id);
+        res.status(200).json(events);
+    } catch (err) {
+        res.status(404).json(err.message);
+    }
+}
+
+async function findEventsByAttendeeName(req, res) {
+    try {
+        let decodedName = decodeURI(req.params.user_name);
+        const user = await User.findByName(decodedName);
+        console.log(user);
+        const events = await Event.findByAttendeeId(user.id);
+        res.status(200).json(events);
     } catch (err) {
         res.status(404).json(err.message);
     }
@@ -74,6 +96,8 @@ module.exports = {
     findAllUsers,
     findById,
     findByName,
+    findEventsByAttendeeName,
+    findEventsByCreator,
     updateUser,
     updatePass,
     deleteUser,
