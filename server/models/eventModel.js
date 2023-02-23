@@ -1,5 +1,6 @@
 const db = require("../dbConfig");
 const utils = require("../utilities/filterUtils");
+const miscUtils = require("../utilities/miscUtils");
 
 //Change for Change sake
 
@@ -82,9 +83,10 @@ class Event {
     static createEvent(eventData) {
         return new Promise(async (resolve, reject) => {
             try {
-                let params = Object.values(eventData);
+                data = miscUtils.setDates(eventData);
+                let params = Object.values(data);
                 let newEventData = await db.query(
-                    `INSERT INTO events (title,description,location,council_id,creator_id,image,spaces,attendees,date_occuring) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;`,
+                    `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occuring,date_ending,date_created) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;`,
                     params
                 );
                 let newEvent = new Event(newEventData.rows[0]);
@@ -118,7 +120,7 @@ class Event {
     static deleteEvent(event_id) {
         return new Promise(async (resolve, reject) => {
             try {
-                await db.query(`DROP * FROM evnets WHERE id = $1;`, [event_id]);
+                await db.query(`DROP * FROM events WHERE id = $1;`, [event_id]);
                 resolve("Event deleted");
             } catch (err) {
                 reject("Failed to delete event: " + err);
