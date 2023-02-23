@@ -1,5 +1,6 @@
 const db = require("../dbConfig");
 const utils = require("../utilities/filterUtils");
+const queryUtils = require("../utilities/queryUtils");
 const miscUtils = require("../utilities/miscUtils");
 
 //Change for Change sake
@@ -33,6 +34,38 @@ class Event {
         });
     }
 
+    static findById(id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let eventData = await db.query(
+                    `SELECT * FROM events WHERE id = $1;`,
+                    [id]
+                );
+                let event = new Event(eventData.rows[0]);
+                resolve(event);
+            } catch (err) {
+                reject("No event found with given ID");
+            }
+        });
+    }
+
+    static findByCreator(creator_id) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let eventData = await db.query(
+                    `SELECT * FROM events WHERE creator_id = $1;`,
+                    [creator_id]
+                );
+                const events = eventData["rows"].map(
+                    (event) => new Event(event)
+                );
+                resolve(events);
+            } catch (err) {
+                reject("No event found with given ID");
+            }
+        });
+    }
+
     static findByTitle(title) {
         return new Promise(async (resolve, reject) => {
             try {
@@ -52,7 +85,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let eventData = await db.query(
-                    `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE attendee.user_id = $1;`,
+                    `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE attendees.user_id = $1;`,
                     [attendeeId]
                 );
                 const events = eventData["rows"].map(
@@ -61,21 +94,6 @@ class Event {
                 resolve(events);
             } catch (err) {
                 reject("No events found for given user");
-            }
-        });
-    }
-
-    static findById(id) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let eventData = await db.query(
-                    `SELECT * FROM events WHERE id = $1;`,
-                    [id]
-                );
-                let event = new Event(eventData.rows[0]);
-                resolve(event);
-            } catch (err) {
-                reject("No event found with given ID");
             }
         });
     }
@@ -101,10 +119,8 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let sqlQueryString =
-                    utils.generateUpdateQueryStringEvents(eventData);
-                let updateValues = [eventData.id].concat(
-                    Object.values(eventData)
-                );
+                    queryUtils.generateUpdateEventsQueryString(eventData);
+                let updateValues = Object.values(eventData);
                 let updateEventData = await db.query(
                     sqlQueryString,
                     updateValues

@@ -1,23 +1,23 @@
-function generateUpdateQueryStringUsers(userData) {
+function generateUpdateUsersQueryString(userData) {
     let sqlQueryString = [`UPDATE users SET`];
     let setStringValues = [];
     let keys = Object.keys(userData);
     keys.shift();
     keys.forEach(function (key, i) {
-        setStringValues.push(key + " = ($" + (i + 1) + ")");
+        setStringValues.push(key + " = ($" + (i + 2) + ")");
     });
     sqlQueryString.push(setStringValues.join(", "));
     sqlQueryString.push(`WHERE id = $1 RETURNING *;`);
     return sqlQueryString.join(" ");
 }
 
-function generateUpdateQueryStringEvents(eventData) {
+function generateUpdateEventsQueryString(eventData) {
     let sqlQueryString = [`UPDATE events SET`];
     let setStringValues = [];
     let keys = Object.keys(eventData);
     keys.shift();
     keys.forEach(function (key, i) {
-        setStringValues.push(key + " = ($" + (i + 1) + ")");
+        setStringValues.push(key + " = ($" + (i + 2) + ")");
     });
     sqlQueryString.push(setStringValues.join(", "));
     sqlQueryString.push(`WHERE id = $1 RETURNING *;`);
@@ -35,8 +35,7 @@ function generateFindByAttendeeIdQueryString(attendeeId) {
 }
 
 module.exports = {
-    generateUpdateQueryStringUsers,
-    generateUpdateQueryStringEvents,
+    generateUpdateUsersQueryString,
+    generateUpdateEventsQueryString,
     generateFindByAttendeeIdQueryString,
-    decodeJwtToken,
 };

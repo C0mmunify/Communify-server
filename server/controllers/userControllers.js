@@ -1,13 +1,12 @@
 const bcryptjs = require("bcryptjs");
 
 const User = require("../models/userModel");
-const utils = require("../utilities/queryUtils");
+const authUtils = require("../utilities/authUtils");
 
 async function findAllUsers(req, res) {
     try {
-        const token = req.headers["authorization"].split(" ")[1];
-        userData = utils.decodeJwtToken(token);
-        if (userData.admin) {
+        let admin = authUtils.CheckAdmin(req.headers);
+        if (admin) {
             const user = await User.findAllUsers();
             res.status(200).json(user);
         } else {
@@ -39,7 +38,11 @@ async function findByName(req, res) {
 
 async function updateUser(req, res) {
     try {
-        const user = await User.updateUser(req.params.user_data);
+        let userData = {
+            id: req.params.user_id,
+            ...req.body,
+        };
+        const user = await User.updateUser(userData);
         res.status(200).json(user);
     } catch (err) {
         res.status(400).json(err.message);

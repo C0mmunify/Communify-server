@@ -43,16 +43,16 @@ class User {
     }
 
     static findByName(name) {
-        return Promise(async (res, rej) => {
+        return new Promise(async (resolve, reject) => {
             try {
-                let userName = await db.query(
-                    `SELECT id FROM users WHERE name = '$1';`,
+                let userData = await db.query(
+                    `SELECT * FROM users WHERE name = $1;`,
                     [name]
                 );
-                let user = new User(userName.rows[0]);
-                res(user);
+                let user = new User(userData.rows[0]);
+                resolve(user);
             } catch (err) {
-                rej({ message: "Name not found: " + err.message });
+                reject({ message: "User not found: " + err.message });
             }
         });
     }
@@ -97,10 +97,8 @@ class User {
         return new Promise(async (res, rej) => {
             try {
                 let sqlQueryString =
-                    utils.generateUpdateQueryStringUsers(userData);
-                let updateValues = [userData.id].concat(
-                    Object.values(userData)
-                );
+                    utils.generateUpdateUsersQueryString(userData);
+                let updateValues = Object.values(userData);
                 let updatedUserData = await db.query(
                     sqlQueryString,
                     updateValues

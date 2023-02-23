@@ -24,8 +24,7 @@ CREATE TABLE events (
     spaces_total int,
     spaces_remaining int,
     date_created timestamp NOT NULL default CURRENT_TIMESTAMP,
-    date_occurring timestamp,
-    date_ending timestamp,
+    date_occurring timestamp
 );
 
 DROP TABLE IF EXISTS forum_posts;
@@ -52,11 +51,8 @@ DROP TABLE IF EXISTS event_comments;
 CREATE TABLE event_comments (
     id serial PRIMARY KEY,
     content varchar(255) NOT NULL,
-    creator_id int,
     event_id int NOT NULL,
-    date_created timestamp,
-    FOREIGN KEY (creator_id) REFERENCES users(id),
-    FOREIGN KEY (event_id) REFERENCES events(id)
+    date_created timestamp
 );
 
 DROP TABLE IF EXISTS auth;

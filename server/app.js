@@ -14,4 +14,8 @@ server.use("/auth", authRouter);
 const eventRouter = require("./routes/eventRoute");
 server.use("/events", eventRouter);
 
+server.get("/health", (req, res) => {
+    res.send("Server is available!");
+});
+
 module.exports = server;
