@@ -46,7 +46,7 @@ class User {
         return Promise(async (res, rej) => {
             try {
                 let userName = await db.query(
-                    `SELECT id FROM users WHERE name = $1;`,
+                    `SELECT id FROM users WHERE name = '$1';`,
                     [name]
                 );
                 let user = new User(userName.rows[0]);

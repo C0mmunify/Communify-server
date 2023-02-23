@@ -12,17 +12,17 @@ class Event {
         this.council = data.council;
         this.location = data.location;
         this.creatorId = data.creator_id;
-        this.image = data.image;
         this.spacesTotal = data.spaces_total;
         this.spacesRemaining = data.spaces_remaining;
         this.dateCreated = data.date_created;
         this.dateOcurring = data.date_occurring;
+        this.dateEnding = data.date_ending;
     }
 
     static findAllEvents() {
         return new Promise(async (resolve, reject) => {
             try {
-                let eventData = await db.query(`SELECT * FROM EVENTS `);
+                let eventData = await db.query(`SELECT * FROM events;`);
                 const events = eventData["rows"].map(
                     (event) => new Event(event)
                 );

@@ -30,7 +30,6 @@ async function findById(req, res) {
 async function findByName(req, res) {
     try {
         let decodedName = decodeURI(req.params.user_name);
-        console.log(decodedName);
         const user = await User.findByName(decodedName);
         res.status(200).json(user);
     } catch (err) {

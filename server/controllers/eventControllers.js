@@ -1,12 +1,11 @@
 const Event = require("../models/eventModel");
 const User = require("../models/userModel");
-const utils = require("../utilities/queryUtils");
+const authUtils = require("../utilities/authUtils");
 
 async function findAllEvents(req, res) {
     try {
-        const token = req.headers["authorization"].split(" ")[1];
-        userData = utils.decodeJwtToken(token);
-        if (userData.admin) {
+        let admin = authUtils.CheckAdmin(req.headers);
+        if (admin) {
             const events = await Event.findAllEvents();
             res.status(200).json(events);
         } else {
@@ -14,6 +13,15 @@ async function findAllEvents(req, res) {
         }
     } catch (err) {
         res.status(500).json(err.message);
+    }
+}
+
+async function findById(req, res) {
+    try {
+        const events = await Event.findById(req.params.event_id);
+        res.status(200).json(events);
+    } catch (err) {
+        res.status(404).json(err.message);
     }
 }
 
@@ -32,15 +40,6 @@ async function findByAttendeeName(req, res) {
         let decodedName = decodeURI(req.params.user_name);
         const userId = await User.findByName(decodedName);
         const events = await Event.findByAttendeeId(userId);
-        res.status(200).json(events);
-    } catch (err) {
-        res.status(404).json(err.message);
-    }
-}
-
-async function findById(req, res) {
-    try {
-        const events = await Event.findById(req.params.event_id);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json(err.message);

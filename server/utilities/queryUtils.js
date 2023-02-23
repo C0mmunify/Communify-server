@@ -1,5 +1,3 @@
-const jwt_decode = require("jwt-decode");
-
 function generateUpdateQueryStringUsers(userData) {
     let sqlQueryString = [`UPDATE users SET`];
     let setStringValues = [];
@@ -34,11 +32,6 @@ function generateFindByAttendeeIdQueryString(attendeeId) {
     ];
     // sqlQueryString.push(setStringValues)
     return sqlQueryString;
-}
-
-function decodeJwtToken(token) {
-    let decodedToken = jwt_decode(token);
-    return decodedToken;
 }
 
 module.exports = {
