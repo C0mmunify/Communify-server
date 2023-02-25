@@ -80,10 +80,11 @@ Prod DB: `postgres://<user>:<pswd>n@ep-divine-rain-338764.eu-central-1.aws.neon.
 
 ## Auth Routes
 
-| **URL**        | **HTTP Verb** | **Action**     |
-| -------------- | ------------- | -------------- |
-| /auth/register | POST          | authentication |
-| /auth/login    | POST          | authentication |
+| **URL**                 | **HTTP Verb** | **Action**     |
+| ----------------------- | ------------- | -------------- |
+| /auth/register          | POST          | authentication |
+| /auth/login             | POST          | authentication |
+| /auth/password/:user_id | PATCH         | update         |
 
 #### POST /auth/register
 
@@ -135,17 +136,37 @@ Example response:
 }
 ```
 
+#### PATCH /auth/password/:user_id
+
+Example request:
+
+```json
+{
+    "old_password": "AbsoluteTopBinz123",
+    "new_password": "CrossbarFirstTime456",
+    "confirm_password": "CrossbarFirstTime456"
+}
+```
+
+Example response:
+
+```json
+{
+    "message": "Password updated."
+}
+```
+
 ## User Routes
 
-| **URL**                            | **HTTP Verb** | **Action** |
-| ---------------------------------- | ------------- | ---------- |
-| /users/                            | GET           | index      |
-| /users/:user_id                    | GET           | show       |
-| /users/user_name/:user_name        | GET           | show       |
-| /users/user_name/:user_name/events | GET           | show       |
-| /users/:user_id                    | PATCH         | update     |
-| /users/:user_id/password           | PATCH         | update     |
-| /users/:user_id                    | DELETE        | destroy    |
+| **URL**                                      | **HTTP Verb** | **Action** |
+| -------------------------------------------- | ------------- | ---------- |
+| /users/                                      | GET           | index      |
+| /users/:user_id                              | GET           | show       |
+| /users/user_name/:user_name                  | GET           | show       |
+| /users/:user_id/events/created               | GET           | show       |
+| /users/user_name/:user_name/events/attending | GET           | show       |
+| /users/:user_id                              | PATCH         | update     |
+| /users/:user_id                              | DELETE        | destroy    |
 
 #### GET /users/
 
@@ -180,7 +201,28 @@ Example response:
 }
 ```
 
-#### GET users/user_name/:user_name/events
+#### /users/:user_id/events/created
+
+```json
+[
+    {
+        "id": 1,
+        "title": "Bash at my gaff",
+        "description": "This is an invite to a bash at my gaff!",
+        "location": "My house",
+        "council": "My council",
+        "creator_id": 1,
+        "spaces_total": 4,
+        "spaces_remaining": 2,
+        "date_created": "2023-02-22T18:00:00.000Z",
+        "date_occuring": "2023-03-14T11:00:00.000Z",
+        "date_ending": "2023-03-14T14:30:00.000Z"
+    },
+    ...
+]
+```
+
+#### GET /users/user_name/:user_name/events/attending
 
 ```json
 [
@@ -207,13 +249,7 @@ Example request:
 
 ```json
 {
-    "name": "Jeremy Lycnh",
-    "email": "swaz_tekkers@email.com",
-    "phone": 1234567890,
-    "age": 16,
-    "council": "My council",
-    "profile_image": "<file>",
-    "admin": true
+    "name": "Jeremy Lynch"
 }
 ```
 
@@ -222,7 +258,7 @@ Example response:
 ```json
 {
     "id": 1,
-    "name": "Jeremy Lycnh",
+    "name": "Jeremy Lynch",
     "email": "swaz_tekkers@email.com",
     "phone": 1234567890,
     "age": 16,
@@ -232,36 +268,19 @@ Example response:
 }
 ```
 
-#### PATCH /users/:user_id/password
-
-Example request:
-
-```json
-{
-    "old_password": "AbsoluteTopBinz123",
-    "new_password": "CrossbarFirstTime456",
-    "confirmed_new_password": "CrossbarFirstTime456"
-}
-```
-
-Example response:
-
-```json
-{
-    "message": "Password updated."
-}
-```
-
 ## Event Routes
 
-| **URL**                          | **HTTP Verb** | **Action** |
-| -------------------------------- | ------------- | ---------- |
-| /events/                         | GET           | index      |
-| /events/:event_id                | GET           | show       |
-| /events/event_title/:event_title | GET           | show       |
-| /events/                         | POST          | create     |
-| /events/:event_id                | PATCH         | update     |
-| /events/:event_id                | DELETE        | destroy    |
+| **URL**                              | **HTTP Verb** | **Action**     |
+| ------------------------------------ | ------------- | -------------- |
+| /events/                             | GET           | index          |
+| /events/:event_id                    | GET           | show           |
+| /events/event_title/:event_title     | GET           | show           |
+| /events/                             | POST          | create         |
+| /events/:event_id                    | PATCH         | update         |
+| /events/:event_id                    | DELETE        | destroy        |
+| /events/:event_id/attendees          | GET           | show           |
+| /events/:event_id/attendees          | POST/PATCH    | edit/update    |
+| /events/:event_id/attendees/:user_id | PATCH/DELETE  | update/destroy |
 
 #### GET /events/
 
@@ -366,6 +385,56 @@ Example response:
 }
 ```
 
+#### GET /events/:event_id/attendees
+
+```json
+{
+    "id": 1,
+    "title": "Bash at my gaff",
+    "description": "Change of plans. We're going to the park instead.",
+    "location": "My house",
+    "council": "My council",
+    "creator_id": 1,
+    "spaces_total": 4,
+    "spaces_remaining": 2,
+    "date_created": "2023-02-22T18:00:00.000Z",
+    "date_occuring": "2023-03-14T11:00:00.000Z",
+    "date_ending": "2023-03-14T14:30:00.000Z",
+    "attendees": [
+        {
+            "id": 1,
+            "name": "Jeremy Lynch",
+            "email": "swaz_tekkers@email.com",
+            "phone": 1234567890,
+            "age": 16,
+            "council": "My council",
+            "profile_image": "<file>",
+            "admin": true
+        },
+        {
+            "id": 4,
+            "name": "Billy Wingrove",
+            "email": "veryhigh_fade@email.com",
+            "phone": null,
+            "age": 23,
+            "council": "My council",
+            "profile_image": null,
+            "admin": true
+        }
+    ]
+}
+```
+
+#### POST /events/:event_id/attendees
+
+Example request:
+
+```json
+{
+    "user_id": 2
+}
+```
+
 # Database Schema
 
 ## Users
@@ -393,7 +462,7 @@ CREATE TABLE auth (
 ```json
 {
     "id": 1,
-    "name": "Jeremy Lycnh",
+    "name": "Jeremy Lynch",
     "email": "swaz_tekkers@email.com",
     "phone": 1234567890,
     "age": 16,
