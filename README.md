@@ -4,7 +4,7 @@
 
 [![MIT license](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/mit-license.php)
 [![GitHub latest commit](https://img.shields.io/github/last-commit/C0mmunify/Communify-server.svg)](https://github.com/C0mmunify/Communify-server)
-[![GitHub forks](https://img.shields.io/github/forks/C0mmunify/Communify-server.svg)](https://github.com/C0mmunify/Communify-server)
+[![GitHub contributors](https://img.shields.io/github/contributors/C0mmunify/Communify-server.svg)](https://github.com/C0mmunify/Communify-server)
 
 Welcome to the server repository for the Communify App!
 
