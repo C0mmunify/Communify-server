@@ -155,7 +155,7 @@ class User {
         return new Promise(async (res, rej) => {
             try {
                 await db.query(
-                    `UPDATE auth SET passwordDigest = $2 WHERE id = $1;`,
+                    `UPDATE auth SET password_digest = $2 WHERE user_id = $1;`,
                     [this.id, newPassword]
                 );
                 res("Password updated successfully.");

@@ -62,4 +62,27 @@ async function login(req, res) {
     }
 }
 
-module.exports = { register, login };
+async function updatePassword(req, res) {
+    try {
+        if (req.body.new_password != req.body.confirm_password) {
+            throw new Error("Did not provide matching password.");
+        }
+        const user = await User.findById(req.params.user_id);
+        const storedPassword = await user.passwordHash;
+        const authed = await bcryptjs.compare(
+            req.body.old_password,
+            storedPassword
+        );
+        if (!authed) {
+            throw new Error("Old password is incorrect.");
+        }
+        const salt = await bcryptjs.genSalt();
+        const hashedPassword = await bcryptjs.hash(req.body.new_password, salt);
+        const result = await user.updatePassword(hashedPassword);
+        res.status(200).json(result);
+    } catch (err) {
+        res.status(500).json(err.message);
+    }
+}
+
+module.exports = { register, login, updatePassword };

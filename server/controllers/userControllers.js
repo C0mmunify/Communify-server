@@ -1,5 +1,3 @@
-const bcryptjs = require("bcryptjs");
-
 const User = require("../models/userModel");
 const Event = require("../models/eventModel");
 const authUtils = require("../utilities/authUtils");
@@ -71,18 +69,6 @@ async function updateUser(req, res) {
     }
 }
 
-async function updatePass(req, res) {
-    try {
-        const user = await User.findById(req.params.user_id);
-        const salt = await bcryptjs.genSalt();
-        const hashedPassword = await bcryptjs.hash(req.body.password, salt);
-        const result = await user.updatePassword(hashedPassword);
-        res.status(200).json(result);
-    } catch (err) {
-        res.status(500).json(err.message);
-    }
-}
-
 async function deleteUser(req, res) {
     try {
         await User.deleteUser(req.params.user_id);
@@ -99,6 +85,5 @@ module.exports = {
     findEventsByAttendeeName,
     findEventsByCreator,
     updateUser,
-    updatePass,
     deleteUser,
 };

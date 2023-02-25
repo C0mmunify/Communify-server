@@ -19,7 +19,6 @@ router.get(
     userControllers.findEventsByAttendeeName
 );
 router.patch("/:user_id", verifyToken, userControllers.updateUser);
-router.patch("/:user_id/password", verifyToken, userControllers.updatePass);
 router.delete("/:user_id", verifyToken, userControllers.deleteUser);
 
 module.exports = router;
