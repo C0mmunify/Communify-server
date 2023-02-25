@@ -73,8 +73,8 @@ async function addAttendee(req, res) {
         if (attending) {
             throw new Error("Already attending.");
         }
-        await event.addAttendee(req.body.user_id);
-        res.status(200);
+        let result = await event.addAttendee(req.body.user_id);
+        res.status(200).send(result);
     } catch (err) {
         res.status(500).json(err.message);
     }
@@ -95,8 +95,8 @@ async function updateEvent(req, res) {
 
 async function deleteEvent(req, res) {
     try {
-        const event = await Event.deleteEvent(req.params.event_id);
-        res.status(200).json(event);
+        const result = await Event.deleteEvent(req.params.event_id);
+        res.status(200).json(result);
     } catch (err) {
         res.status(400).json(err.message);
     }
@@ -105,8 +105,8 @@ async function deleteEvent(req, res) {
 async function removeAttendee(req, res) {
     try {
         const event = await Event.findById(req.params.event_id);
-        await event.deleteAttendee(req.params.user_id);
-        res.status(200);
+        let result = await event.deleteAttendee(req.params.user_id);
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }

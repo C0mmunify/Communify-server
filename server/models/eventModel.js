@@ -186,6 +186,10 @@ class Event {
                     `INSERT INTO attendees (event_id,user_id) VALUES ($1,$2);`,
                     [this.id, user_id]
                 );
+                await db.query(
+                    `UPDATE events SET spaces_remaining = spaces_remaining - 1 WHERE id = $1;`,
+                    [this.id]
+                );
                 resolve("Success");
             } catch (err) {
                 reject({ message: "Could not add attendee: " + err.message });
@@ -199,6 +203,10 @@ class Event {
                 await db.query(
                     `DELETE FROM attendees WHERE event_id = $1 AND user_id = $2;`,
                     [this.id, user_id]
+                );
+                await db.query(
+                    `UPDATE events SET spaces_remaining = spaces_remaining + 1 WHERE id = $1;`,
+                    [this.id]
                 );
                 resolve("Success");
             } catch (err) {
