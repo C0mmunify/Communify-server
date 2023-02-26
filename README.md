@@ -24,23 +24,36 @@ Welcome to the server repository for the Communify App!
 
 # Local Usage
 
-Before running any scripts you must create a `.env` file within the `server` directory. In this file you must store the following:
+### Setting up the Environment
+
+Before running any scripts you must create a `.env` file within the `server` directory.
+
+In this file you must store the following:
 
 -   `HMAC_SECRET=<Ask a collaborator>`
 -   `DB_CONNECTION_STRING=postgres://<username>:<password>@ep-proud-block-401871.eu-central-1.aws.neon.tech/neondb`
 
-To run the server while interacting with the deployed development database, navigate to the `server` directory and run `npm run dev`.
+### Running the Server
 
-The below bash script will create a temporary storage volume which will persist locally until torn down.
+`cd server && npm start`
 
-`bash _scripts/start.sh`
+-   Host the server locally on port 3000.
+
+### Running Tests
+
+`bash _scripts/test.sh`
 
 -   Starts api & db services
 -   Runs db migrations
--   Seeds db for development
--   Serves api on `localhost:3003`
+-   Attaches to api container and triggers full test run
+-   No ports mapped to local host
 
-Note: Press `Ctrl` + `C` to terminate the docker container
+`bash _scripts/coverage.sh`
+
+-   Starts api & db services
+-   Runs db migrations
+-   Attaches to api container and triggers full test coverage run
+-   No ports mapped to local host
 
 `bash _scripts/stop.sh`
 
@@ -51,6 +64,8 @@ Note: Press `Ctrl` + `C` to terminate the docker container
 -   Stops all running services
 -   Removes containers
 -   Removes volumes
+
+**Note:** Press `Ctrl` + `C` to terminate a docker container.
 
 # Deployment
 

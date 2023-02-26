@@ -27,11 +27,8 @@ async function register(req, res) {
 
 async function login(req, res) {
     try {
-        if (!req.body.email) {
-            throw new Error("No email provided");
-        }
-        if (!req.body.password) {
-            throw new Error("No password provided");
+        if (!req.body.email || !req.body.password) {
+            res.status(400).json({ error: "Missing email or password" });
         }
         const user = await User.findByEmail(req.body.email);
         if (!user) {
@@ -54,18 +51,19 @@ async function login(req, res) {
                 Bearer: token,
             });
         } else {
-            throw new Error("Incorrect password");
+            res.status(401).json({ error: "Incorrect password" });
         }
     } catch (err) {
-        // res.status(401);
-        res.status(401).json({ error: err.message });
+        res.status(500).json({ error: err.message });
     }
 }
 
 async function updatePassword(req, res) {
     try {
         if (req.body.new_password != req.body.confirm_password) {
-            throw new Error("Did not provide matching password.");
+            res.status(400).json({
+                error: "Did not provide matching password.",
+            });
         }
         const user = await User.findById(req.params.user_id);
         const storedPassword = await user.passwordHash;
@@ -74,14 +72,14 @@ async function updatePassword(req, res) {
             storedPassword
         );
         if (!authed) {
-            throw new Error("Old password is incorrect.");
+            res.status(401).json({ error: "Incorrect password." });
         }
         const salt = await bcryptjs.genSalt();
         const hashedPassword = await bcryptjs.hash(req.body.new_password, salt);
         const result = await user.updatePassword(hashedPassword);
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).json({ error: err.message });
     }
 }
 
