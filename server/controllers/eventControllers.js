@@ -1,5 +1,4 @@
 const Event = require("../models/eventModel");
-const User = require("../models/userModel");
 const authUtils = require("../utilities/authUtils");
 
 async function findAllEvents(req, res) {
