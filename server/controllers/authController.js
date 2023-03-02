@@ -21,7 +21,7 @@ async function register(req, res) {
         );
         res.status(201).json(result);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).send();
     }
 }
 
@@ -31,9 +31,9 @@ async function login(req, res) {
             res.status(400).json({ error: "Missing email or password" });
         }
         const user = await User.findByEmail(req.body.email);
-        if (!user) {
-            throw new Error("No user with given email.");
-        }
+        // if (!user) {
+        //     throw new Error("No user with given email.");
+        // }
         const storedPassword = await user.passwordHash;
         const authed = await bcryptjs.compare(
             req.body.password,
@@ -54,7 +54,7 @@ async function login(req, res) {
             res.status(401).json({ error: "Incorrect password" });
         }
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).send();
     }
 }
 
@@ -79,7 +79,7 @@ async function updatePassword(req, res) {
         const result = await user.updatePassword(hashedPassword);
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).send();
     }
 }
 

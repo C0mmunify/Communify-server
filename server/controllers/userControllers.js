@@ -9,7 +9,7 @@ async function findAllUsers(req, res) {
             const user = await User.findAllUsers();
             res.status(200).json(user);
         } else {
-            res.status(403).json({ message: "Logged in user is not admin" });
+            res.status(403).json({ error: "Logged in user is not admin" });
         }
     } catch (err) {
         res.status(500).json(err.message);
@@ -21,7 +21,7 @@ async function findById(req, res) {
         const user = await User.findById(req.params.user_id);
         res.status(200).json(user);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: "User not found: " + err.message });
     }
 }
 
@@ -31,7 +31,7 @@ async function findByName(req, res) {
         const user = await User.findByName(decodedName);
         res.status(200).json(user);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: "User not found: " + err.message });
     }
 }
 
@@ -40,7 +40,7 @@ async function findEventsByCreator(req, res) {
         const events = await Event.findByCreator(req.params.user_id);
         res.status(200).json(events);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: err.message });
     }
 }
 
@@ -51,7 +51,7 @@ async function findEventsByAttendeeName(req, res) {
         const events = await Event.findByAttendeeId(user.id);
         res.status(200).json(events);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: err.message });
     }
 }
 
@@ -64,7 +64,9 @@ async function updateUser(req, res) {
         const user = await User.updateUser(userData);
         res.status(200).json(user);
     } catch (err) {
-        res.status(400).json(err.message);
+        res.status(400).json({
+            error: "Could not update user info: " + err.message,
+        });
     }
 }
 
@@ -73,7 +75,9 @@ async function deleteUser(req, res) {
         await User.deleteUser(req.params.user_id);
         res.status(200);
     } catch (err) {
-        res.status(400).json(err);
+        res.status(400).json({
+            error: "Failed to delete user: " + err.message,
+        });
     }
 }
 

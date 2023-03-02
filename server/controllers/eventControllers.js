@@ -11,7 +11,7 @@ async function findAllEvents(req, res) {
             res.status(403).json({ message: "Logged in user is not admin" });
         }
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).send();
     }
 }
 
@@ -20,7 +20,7 @@ async function findById(req, res) {
         const event = await Event.findById(req.params.event_id);
         res.status(200).json(event);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: err.message });
     }
 }
 
@@ -30,7 +30,7 @@ async function findByIdWithAttendees(req, res) {
         event.attendees = await event.getAttendees();
         res.status(200).json(event);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: err.message });
     }
 }
 
@@ -40,7 +40,7 @@ async function findByTitle(req, res) {
         const events = await Event.findByTitle(decodedTitle);
         res.status(200).json(events);
     } catch (err) {
-        res.status(404).json(err.message);
+        res.status(404).json({ error: err.message });
     }
 }
 
@@ -61,7 +61,9 @@ async function createEvent(req, res) {
         const event = await Event.createEvent(eventData);
         res.status(201).json(event);
     } catch (err) {
-        res.status(400).json(err.message);
+        res.status(400).json({
+            error: "Failed to create event: " + err.message,
+        });
     }
 }
 
@@ -75,7 +77,7 @@ async function addAttendee(req, res) {
         let result = await event.addAttendee(req.body.user_id);
         res.status(200).send(result);
     } catch (err) {
-        res.status(500).json(err.message);
+        res.status(500).send();
     }
 }
 
@@ -88,16 +90,16 @@ async function updateEvent(req, res) {
         const event = await Event.updateEvent(eventData);
         res.status(200).json(event);
     } catch (err) {
-        res.status(400).json(err.message);
+        res.status(500).send();
     }
 }
 
 async function deleteEvent(req, res) {
     try {
-        const result = await Event.deleteEvent(req.params.event_id);
-        res.status(200).json(result);
+        await Event.deleteEvent(req.params.event_id);
+        res.status(200);
     } catch (err) {
-        res.status(400).json(err.message);
+        res.status(500).send();
     }
 }
 
@@ -107,7 +109,7 @@ async function removeAttendee(req, res) {
         let result = await event.deleteAttendee(req.params.user_id);
         res.status(200).json(result);
     } catch (err) {
-        res.status(500).json(err);
+        res.status(500).send();
     }
 }
 
