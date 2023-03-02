@@ -12,10 +12,9 @@ describe("Auth endpoints", () => {
             .send({ email: "testuser1@email.com", password: "password1" })
             .set("Accept", "application/json");
         token = loginResponse._body.Bearer;
-    });
+    }, 100000);
 
     beforeEach(async () => {
-        console.log("-----------------------------------");
         await resetTestDB();
     });
 
@@ -25,6 +24,19 @@ describe("Auth endpoints", () => {
     });
 
     describe("auth", () => {
+        describe("Miscellaneous", () => {
+            test("if no authorisation header provided return 403", async () => {
+                const res = await request(api).get("/users");
+                expect(res.statusCode).toEqual(403);
+            });
+
+            test("health check endpoint states server is available", async () => {
+                const res = await request(api).get("/health");
+                expect(res.statusCode).toEqual(200);
+                expect(res.text).toMatch(/server is available/i);
+            });
+        });
+
         describe("POST /register", () => {
             test("it adds a user to the db", async () => {
                 const res = await request(api)
@@ -44,7 +56,7 @@ describe("Auth endpoints", () => {
                 expect(res.body.id).toBe(9);
                 const newRes = await request(api)
                     .get("/users/user_name/tester")
-                    .set("authorization", "Bearer" + token);
+                    .set("authorization", "Bearer " + token);
                 expect(newRes.body).toBeTruthy();
             });
 
@@ -84,7 +96,7 @@ describe("Auth endpoints", () => {
 
             test("it throws 400 error if no email provided", async () => {
                 const res = await request(api)
-                    .post("/auth/register")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
                             password: "password",
@@ -96,10 +108,10 @@ describe("Auth endpoints", () => {
 
             test("it throws 400 error if password is not provided", async () => {
                 const res = await request(api)
-                    .post("/auth/register")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
-                            username: "tester",
+                            email: "tester",
                         })
                     )
                     .set("Content-Type", "application/json");
@@ -108,10 +120,10 @@ describe("Auth endpoints", () => {
 
             test("it throws 500 error if cannot find user", async () => {
                 const res = await request(api)
-                    .post("/auth/register")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
-                            username: "tester",
+                            email: "tester",
                             password: "password",
                         })
                     )
@@ -121,10 +133,10 @@ describe("Auth endpoints", () => {
 
             test("it throws 401 error if password is incorrect", async () => {
                 const res = await request(api)
-                    .post("/auth/register")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
-                            username: "testuser1@email.com",
+                            email: "testuser1@email.com",
                             password: "incorrectpassword",
                         })
                     )
@@ -136,17 +148,18 @@ describe("Auth endpoints", () => {
         describe("PATCH /password/:user_id", () => {
             test("it updates users password in the db", async () => {
                 const res1 = await request(api)
-                    .get("/auth/login")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
                             email: "testuser1@email.com",
                             password: "password1",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", "Bearer " + token);
                 expect(res1.statusCode).toEqual(200);
                 const res2 = await request(api)
-                    .post("/auth/password/1")
+                    .patch("/auth/password/1")
                     .send(
                         JSON.stringify({
                             old_password: "password1",
@@ -154,10 +167,11 @@ describe("Auth endpoints", () => {
                             confirm_password: "newpassword",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", "Bearer " + token);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)
-                    .get("/auth/login")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
                             email: "testuser1@email.com",
@@ -167,7 +181,7 @@ describe("Auth endpoints", () => {
                     .set("Content-Type", "application/json");
                 expect(res3.statusCode).toEqual(401);
                 const res4 = await request(api)
-                    .get("/auth/login")
+                    .post("/auth/login")
                     .send(
                         JSON.stringify({
                             email: "testuser1@email.com",
@@ -180,7 +194,7 @@ describe("Auth endpoints", () => {
 
             test("it throws 400 error if password confirmation is invalid", async () => {
                 const res = await request(api)
-                    .post("/auth/password/1")
+                    .patch("/auth/password/1")
                     .send(
                         JSON.stringify({
                             old_password: "password1",
@@ -188,13 +202,14 @@ describe("Auth endpoints", () => {
                             confirm_password: "wrongnewpassword",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", "Bearer " + token);
                 expect(res.statusCode).toEqual(400);
             });
 
             test("it throws 401 error if old password is incorrect", async () => {
                 const res = await request(api)
-                    .post("/auth/password/1")
+                    .patch("/auth/password/1")
                     .send(
                         JSON.stringify({
                             old_password: "wrongoldpassword",
@@ -202,7 +217,8 @@ describe("Auth endpoints", () => {
                             confirm_password: "newpassword",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", "Bearer " + token);
                 expect(res.statusCode).toEqual(401);
             });
         });

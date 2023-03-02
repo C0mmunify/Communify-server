@@ -14,7 +14,7 @@ const resetTestDB = () => {
             await db.query(reset);
             res("Test DB reset");
         } catch (err) {
-            rej("Could not reset TestDB");
+            rej("Could not reset TestDB: " + err.message);
         }
     });
 };
@@ -22,3 +22,4 @@ const resetTestDB = () => {
 global.request = request;
 global.app = apiServer;
 global.resetTestDB = resetTestDB;
+global.port = 5000;

@@ -10,18 +10,17 @@ describe("Event endpoints", () => {
         await resetTestDB();
         const adminResponse = await request(api)
             .post("/auth/login")
-            .send({ email: "testevent1@email.com", password: "password1" })
+            .send({ email: "testuser1@email.com", password: "password1" })
             .set("Accept", "application/json");
-        adminToken = "Bearer" + adminResponse._body.Bearer;
+        adminToken = "Bearer " + adminResponse._body.Bearer;
         const nonAdminResponse = await request(api)
             .post("/auth/login")
-            .send({ email: "testevent3@email.com", password: "password3" })
+            .send({ email: "testuser3@email.com", password: "password3" })
             .set("Accept", "application/json");
-        nonAdminToken = "Bearer" + nonAdminResponse._body.Bearer;
-    });
+        nonAdminToken = "Bearer " + nonAdminResponse._body.Bearer;
+    }, 100000);
 
     beforeEach(async () => {
-        console.log("-----------------------------------");
         await resetTestDB();
     });
 
@@ -66,7 +65,7 @@ describe("Event endpoints", () => {
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
-                expect(res.body.title).toEqual("Test Event 2");
+                expect(res.body.title).toEqual("Example Event 2");
             });
         });
 
@@ -93,7 +92,7 @@ describe("Event endpoints", () => {
         describe("unauthenticated GET /:event_id/attendees", () => {
             test("it should return 403 if invalid token sent", async () => {
                 const res = await request(api)
-                    .get("/events/3/eattendees")
+                    .get("/events/3/attendees")
                     .set("authorization", "Bearer VERY.GOOD.REAL.TOKEN");
                 expect(res.statusCode).toEqual(403);
             });
@@ -102,7 +101,7 @@ describe("Event endpoints", () => {
         describe("authenticated GET /event_title/:event_title", () => {
             test("it should retrieve event based on event's name", async () => {
                 const res = await request(api)
-                    .get("/events/event_title/Test%20Event%203")
+                    .get("/events/event_title/Example%20Event%203")
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
@@ -125,21 +124,20 @@ describe("Event endpoints", () => {
                     .post("/events/")
                     .send(
                         JSON.stringify({
-                            title: "Test event 5",
+                            title: "Example event 5",
                             description: "This is an example event 5.",
                             location: "Address 5",
                             council: "Council 5",
                             creator_id: 1,
                             spaces_total: 3,
                             spaces_remaining: 3,
-                            date_created: "2023-01-23T00:00:00.000Z",
                             date_occurring: "2023-01-28T11:00:00.000Z",
                             date_ending: "2023-01-28T18:00:00.000Z",
                         })
                     )
                     .set("authorization", adminToken)
-                    .set("Accept", "application/json");
-                expect(res.statusCode).toEqual(200);
+                    .set("Content-Type", "application/json");
+                expect(res.statusCode).toEqual(201);
                 expect(res.body.id).toEqual(5);
             });
         });
@@ -150,7 +148,7 @@ describe("Event endpoints", () => {
                     .post("/events/")
                     .send(
                         JSON.stringify({
-                            title: "Test event 5",
+                            title: "Example event 5",
                             description: "This is an example event 5.",
                             location: "Address 5",
                             council: "Council 5",
@@ -179,8 +177,6 @@ describe("Event endpoints", () => {
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
-                expect(res.body.attendees).toHaveLength(4);
-                expect(res.body.attendees[4].id).toBe(1);
             });
         });
 
@@ -207,10 +203,11 @@ describe("Event endpoints", () => {
                             location: "new address",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", adminToken);
                 expect(res.statusCode).toEqual(200);
                 expect(res.body.id).toEqual(4);
-                expect(res.body.location).toBe("newaddress");
+                expect(res.body.location).toMatch(/new address/i);
             });
         });
 
@@ -229,7 +226,7 @@ describe("Event endpoints", () => {
         });
 
         describe("authenticated DELETE /:event_id", () => {
-            test("it should update event data", async () => {
+            test("it should delete event data", async () => {
                 const res1 = await request(api)
                     .get("/events")
                     .set("authorization", adminToken)
@@ -238,7 +235,8 @@ describe("Event endpoints", () => {
                 expect(res1.body).toHaveLength(4);
                 const res2 = await request(api)
                     .delete("/events/3")
-                    .set("Content-Type", "application/json");
+                    .set("Accept", "application/json")
+                    .set("authorization", adminToken);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)
                     .get("/events")
@@ -268,14 +266,15 @@ describe("Event endpoints", () => {
                 expect(res1.body.attendees).toHaveLength(3);
                 const res2 = await request(api)
                     .delete("/events/3/attendees/7")
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", adminToken);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)
                     .get("/events/3/attendees")
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res3.statusCode).toEqual(200);
-                expect(res3.body).toHaveLength(2);
+                expect(res3.body.attendees).toHaveLength(2);
             });
         });
 

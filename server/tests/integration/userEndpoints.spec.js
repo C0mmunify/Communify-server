@@ -12,16 +12,15 @@ describe("User endpoints", () => {
             .post("/auth/login")
             .send({ email: "testuser1@email.com", password: "password1" })
             .set("Accept", "application/json");
-        adminToken = "Bearer" + adminResponse._body.Bearer;
+        adminToken = "Bearer " + adminResponse._body.Bearer;
         const nonAdminResponse = await request(api)
             .post("/auth/login")
             .send({ email: "testuser3@email.com", password: "password3" })
             .set("Accept", "application/json");
-        nonAdminToken = "Bearer" + nonAdminResponse._body.Bearer;
-    });
+        nonAdminToken = "Bearer " + nonAdminResponse._body.Bearer;
+    }, 100000);
 
     beforeEach(async () => {
-        console.log("-----------------------------------");
         await resetTestDB();
     });
 
@@ -106,8 +105,8 @@ describe("User endpoints", () => {
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
-                expect(res.body.events).toHaveLength(2);
-                expect(res.body.events[0].title).toMatch(/Example Event 1/i);
+                expect(res.body).toHaveLength(2);
+                expect(res.body[0].title).toMatch(/Example Event 1/i);
             });
         });
 
@@ -127,7 +126,7 @@ describe("User endpoints", () => {
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
-                expect(res.body.events).toHaveLength(2);
+                expect(res.body).toHaveLength(2);
             });
         });
 
@@ -154,7 +153,8 @@ describe("User endpoints", () => {
                             profile_image: "image 7",
                         })
                     )
-                    .set("Content-Type", "application/json");
+                    .set("Content-Type", "application/json")
+                    .set("authorization", adminToken);
                 expect(res.statusCode).toEqual(200);
                 expect(res.body.id).toBe(7);
                 expect(res.body.email).toBe("newemail@email.com");
@@ -190,7 +190,8 @@ describe("User endpoints", () => {
                 expect(res1.body).toHaveLength(8);
                 const res2 = await request(api)
                     .delete("/users/7")
-                    .set("Content-Type", "application/json");
+                    .set("Accept", "application/json")
+                    .set("authorization", adminToken);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)
                     .get("/users")

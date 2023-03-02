@@ -64,17 +64,3 @@ VALUES
     ('1', '4'),
     ('4', '4'),
     ('6', '4');
-
-INSERT INTO auth (
-    user_id,
-    password_digest
-)
-VALUES
-    ('1', '$2y$10$AcA1dC5aWuK9/RdQ/9/1I.9JU5tdQMAyieOHkSLKMnwhmyehKmIbq'),
-    ('2', '$2y$10$LFY9s2O6ipYwLyG1tlkWAe1MS5VIdR1qAEPSmvmVISmyL9PDG5U62'),
-    ('3', '$2y$10$5ZMr424hhUyNKqSKx8eEzemwbCH3M1KEaipqlQmagHVg6PkYSStBq'),
-    ('4', '$2y$10$cAWYgHh3Yt722cXDNKM/z.8SSf7ILUgL0xSy1KFTzkBzE97FAkB0S'),
-    ('5', '$2y$10$jdiUvxpMn1WMxFKRCL/nxOMTnih6hyczEaCtDPGzZlp3SK4TKBjVa'),
-    ('6', '$2y$10$GPSzhhhJ1Tsv5qFJLzsCgO3nB1BdaNDf48Icy32iJC252/qx2Zjby'),
-    ('7', '$2y$10$pyXXkz73Fu1Vl3L/.cNR6OTI7Ez4dHiLwLZcSfO.OGr9heDtnG72C'),
-    ('8', '$2y$10$O3eVaDCdLs2vxFDmkxHhmeF7N8T2legVXwdtjUI2sMM.SFhm/bYj6');
