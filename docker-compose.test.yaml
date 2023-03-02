@@ -25,4 +25,4 @@ volumes:
   test_db:
 networks:
   default:
-    name: c0mmunify_api_test
+    name: c0mmunify_test_api
