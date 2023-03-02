@@ -30,16 +30,22 @@ Before running any scripts you must create a `.env` file within the `server` dir
 
 In this file you must store the following:
 
--   `HMAC_SECRET=<Ask a collaborator>`
--   `DB_CONNECTION_STRING=postgres://<username>:<password>@ep-proud-block-401871.eu-central-1.aws.neon.tech/neondb`
+-   `HMAC_SECRET=<Set to any value you want>`
+-   `DEV_DB_CONNECTION_STRING=postgres://<username>:<password>@ep-proud-block-401871.eu-central-1.aws.neon.tech/neondb`
+
+**Note:** To get DB credentials, please contact a collaborator.
 
 ### Running the Server
+
+Set the environment variable `ENVIRONMENT=dev`.
 
 `cd server && npm start`
 
 -   Host the server locally on port 3000.
 
-### Running Tests
+### Running Test Suites
+
+Set the environment variable `ENVIRONMENT=test`.
 
 `bash _scripts/test.sh`
 
