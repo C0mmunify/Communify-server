@@ -30,7 +30,7 @@ class Event {
                 );
                 resolve(events);
             } catch (err) {
-                reject({ message: err.message });
+                reject(err);
             }
         });
     }
@@ -45,7 +45,7 @@ class Event {
                 let event = new Event(eventData.rows[0]);
                 resolve(event);
             } catch (err) {
-                reject("No event found with given ID");
+                reject(err);
             }
         });
     }
@@ -62,7 +62,7 @@ class Event {
                 );
                 resolve(events);
             } catch (err) {
-                reject("No event found with given ID");
+                reject(err);
             }
         });
     }
@@ -77,7 +77,7 @@ class Event {
                 let event = new Event(eventData.rows[0]);
                 resolve(event);
             } catch (err) {
-                reject("No event found with given title");
+                reject(err);
             }
         });
     }
@@ -94,7 +94,7 @@ class Event {
                 );
                 resolve(events);
             } catch (err) {
-                reject("No events found for given user");
+                reject(err);
             }
         });
     }
@@ -111,7 +111,7 @@ class Event {
                 let newEvent = new Event(newEventData.rows[0]);
                 resolve(newEvent);
             } catch (err) {
-                reject({ message: "Event Creation Failed: " + err.message });
+                reject(err);
             }
         });
     }
@@ -140,7 +140,7 @@ class Event {
                 await db.query(`DELETE FROM events WHERE id = $1;`, [event_id]);
                 resolve("Event deleted");
             } catch (err) {
-                reject("Failed to delete event: " + err);
+                reject(err);
             }
         });
     }
@@ -157,7 +157,7 @@ class Event {
                 );
                 resolve(attendees);
             } catch (err) {
-                reject({ message: "Could not add attendee: " + err.message });
+                reject(err);
             }
         });
     }
@@ -174,7 +174,7 @@ class Event {
                 }
                 resolve(false);
             } catch (err) {
-                reject({ message: err.message });
+                reject(err);
             }
         });
     }
@@ -192,7 +192,7 @@ class Event {
                 );
                 resolve("Success");
             } catch (err) {
-                reject({ message: "Could not add attendee: " + err.message });
+                reject(err);
             }
         });
     }
@@ -210,9 +210,7 @@ class Event {
                 );
                 resolve("Success");
             } catch (err) {
-                reject({
-                    message: "Could not remove attendee: " + err.message,
-                });
+                reject(err);
             }
         });
     }

@@ -22,7 +22,7 @@ class User {
                 let users = userData["rows"].map((user) => new User(user));
                 resolve(users);
             } catch (err) {
-                reject({ message: err.message });
+                reject(err);
             }
         });
     }
@@ -37,7 +37,7 @@ class User {
                 let user = new User(userData.rows[0]);
                 resolve(user);
             } catch (err) {
-                reject({ message: "User not found: " + err.message });
+                reject(err);
             }
         });
     }
@@ -52,7 +52,7 @@ class User {
                 let user = new User(userData.rows[0]);
                 resolve(user);
             } catch (err) {
-                reject({ message: "User not found: " + err.message });
+                reject(err);
             }
         });
     }
@@ -64,7 +64,7 @@ class User {
                     `SELECT * FROM users WHERE email = $1;`,
                     [email]
                 );
-                if (userData.rows[0] == undefined) {
+                if (userData.rows.length == 0) {
                     resolve(undefined);
                 }
                 let user = new User(userData.rows[0]);
@@ -88,7 +88,7 @@ class User {
                 await newUser.createPassword(passwordDigest);
                 res(newUser);
             } catch (err) {
-                rej({ message: "User Creation Failed: " + err.message });
+                rej(err);
             }
         });
     }
@@ -117,7 +117,7 @@ class User {
                 await db.query(`DELETE FROM users WHERE id = $1;`, [id]);
                 resolve("User deleted");
             } catch (err) {
-                reject("Failed to delete user: " + err.message);
+                reject(err);
             }
         });
     }
@@ -160,7 +160,7 @@ class User {
                 );
                 res("Password updated successfully.");
             } catch (err) {
-                rej({ message: "Failed to update password: " + err.message });
+                rej(err);
             }
         });
     }
