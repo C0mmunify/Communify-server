@@ -4,6 +4,7 @@ const eventController = require("../../../controllers/eventControllers");
 const Event = require("../../../models/eventModel");
 const User = require("../../../models/userModel");
 const testEventData = require("../testEventSeeds.json");
+const testUserData = require("../testUserSeeds.json");
 
 const mockSend = jest.fn();
 const mockJson = jest.fn((message) => ({}));
@@ -13,7 +14,7 @@ const mockStatus = jest.fn((statusCode) => ({
 }));
 const mockRes = { status: mockStatus };
 
-describe("User controller", () => {
+describe("Event controller", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -88,6 +89,41 @@ describe("User controller", () => {
         });
     });
 
+    describe("findByIdWithAttendees", () => {
+        test("it returns successful response with 200 status code", async () => {
+            const testEvent = testEventData[0];
+            jest.spyOn(Event, "findById").mockResolvedValueOnce(
+                new Event(testEvent)
+            );
+            jest.spyOn(Event.prototype, "getAttendees").mockResolvedValueOnce(
+                testUserData
+            );
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+            };
+            await eventController.findByIdWithAttendees(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+
+        test("it responds with code 404 in case of error", async () => {
+            jest.spyOn(Event, "findById").mockImplementation(() => {
+                throw new Error();
+            });
+            jest.spyOn(Event.prototype, "getAttendees").mockResolvedValueOnce(
+                testUserData
+            );
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+            };
+            await eventController.findByIdWithAttendees(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+        });
+    });
+
     describe("findByTitle", () => {
         test("it returns successful response with 200 status code", async () => {
             const testEvent = testEventData[0];
@@ -111,36 +147,6 @@ describe("User controller", () => {
                 },
             };
             await eventController.findByTitle(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(404);
-        });
-    });
-
-    describe("findByAttendeeName", () => {
-        test("it returns successful response with 200 status code", async () => {
-            const testEvents = testEventData;
-            jest.spyOn(User, "findByName").mockResolvedValueOnce(1);
-            jest.spyOn(Event, "findByAttendeeId").mockResolvedValueOnce(
-                testEvents
-            );
-            const mockReq = {
-                params: {
-                    user_name: "test name",
-                },
-            };
-            await eventController.findByAttendeeName(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-        });
-
-        test("it responds with code 404 in case of error", async () => {
-            jest.spyOn(User, "findByName").mockImplementation(() => {
-                throw new Error();
-            });
-            const mockReq = {
-                params: {
-                    user_name: "test name",
-                },
-            };
-            await eventController.findByAttendeeName(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(404);
         });
     });
@@ -217,7 +223,7 @@ describe("User controller", () => {
             expect(mockStatus).toHaveBeenCalledWith(200);
         });
 
-        test("it responds with code 400 in case of error", async () => {
+        test("it responds with code 500 in case of error", async () => {
             jest.spyOn(Event, "updateEvent").mockImplementation(() => {
                 throw new Error();
             });
@@ -227,7 +233,7 @@ describe("User controller", () => {
                 },
             };
             await eventController.updateEvent(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockStatus).toHaveBeenCalledWith(500);
         });
     });
 
@@ -245,7 +251,7 @@ describe("User controller", () => {
             expect(mockStatus).toHaveBeenCalledWith(200);
         });
 
-        test("it responds with code 400 in case of error", async () => {
+        test("it responds with code 500 in case of error", async () => {
             jest.spyOn(Event, "deleteEvent").mockImplementation(() => {
                 throw new Error();
             });
@@ -255,7 +261,86 @@ describe("User controller", () => {
                 },
             };
             await eventController.deleteEvent(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(400);
+            expect(mockStatus).toHaveBeenCalledWith(500);
+        });
+    });
+
+    describe("addAttendee", () => {
+        test("it returns successful response with 200 status code", async () => {
+            const testEvent = testEventData[0];
+            jest.spyOn(Event, "findById").mockResolvedValueOnce(
+                new Event(testEvent)
+            );
+            jest.spyOn(
+                Event.prototype,
+                "checkAttendance"
+            ).mockResolvedValueOnce(false);
+            jest.spyOn(Event.prototype, "addAttendee").mockResolvedValueOnce(
+                "Success"
+            );
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+                body: {
+                    user_id: 1,
+                },
+            };
+            await eventController.addAttendee(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+
+        test("it responds with code 500 if user already attending", async () => {
+            const testEvent = testEventData[0];
+            jest.spyOn(Event, "findById").mockResolvedValueOnce(
+                new Event(testEvent)
+            );
+            jest.spyOn(
+                Event.prototype,
+                "checkAttendance"
+            ).mockResolvedValueOnce(true);
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+                body: {
+                    user_id: 1,
+                },
+            };
+            await eventController.addAttendee(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(500);
+        });
+    });
+
+    describe("removeAttendee", () => {
+        test("it returns successful response with 200 status code", async () => {
+            const testEvent = testEventData[0];
+            jest.spyOn(Event, "findById").mockResolvedValueOnce(
+                new Event(testEvent)
+            );
+            jest.spyOn(Event.prototype, "deleteAttendee").mockResolvedValueOnce(
+                "Success"
+            );
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+            };
+            await eventController.removeAttendee(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+
+        test("it responds with code 500 if user already attending", async () => {
+            jest.spyOn(Event, "findById").mockImplementation(() => {
+                throw new Error();
+            });
+            const mockReq = {
+                params: {
+                    event_id: 1,
+                },
+            };
+            await eventController.removeAttendee(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(500);
         });
     });
 });

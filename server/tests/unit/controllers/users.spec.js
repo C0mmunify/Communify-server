@@ -2,7 +2,9 @@ require("dotenv").config();
 
 const userController = require("../../../controllers/userControllers");
 const User = require("../../../models/userModel");
+const Event = require("../../../models/eventModel");
 const testUserData = require("../testUserSeeds.json");
+const testEventData = require("../testEventSeeds.json");
 
 const mockSend = jest.fn();
 const mockJson = jest.fn((message) => ({}));
@@ -112,6 +114,65 @@ describe("User controller", () => {
         });
     });
 
+    describe("findEventsByCreator", () => {
+        test("it returns successful response with 200 status code", async () => {
+            const testEvents = testEventData;
+            jest.spyOn(Event, "findByCreator").mockResolvedValueOnce(
+                testEvents
+            );
+            const mockReq = {
+                params: {
+                    user_id: 1,
+                },
+            };
+            await userController.findEventsByCreator(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+
+        test("it responds with code 404 in case of error", async () => {
+            jest.spyOn(Event, "findByCreator").mockImplementation(() => {
+                throw new Error();
+            });
+            const mockReq = {
+                params: {
+                    user_id: 1,
+                },
+            };
+            await userController.findEventsByCreator(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+        });
+    });
+
+    describe("findEventsByAttendeeName", () => {
+        test("it returns successful response with 200 status code", async () => {
+            const testEvents = testEventData;
+            jest.spyOn(User, "findByName").mockResolvedValueOnce({ id: 1 });
+            jest.spyOn(Event, "findByAttendeeId").mockResolvedValueOnce(
+                testEvents
+            );
+            const mockReq = {
+                params: {
+                    user_name: "test%20name",
+                },
+            };
+            await userController.findEventsByAttendeeName(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+        });
+
+        test("it responds with code 404 in case of error", async () => {
+            jest.spyOn(User, "findByName").mockImplementation(() => {
+                throw new Error();
+            });
+            const mockReq = {
+                params: {
+                    user_name: "test%20name",
+                },
+            };
+            await userController.findEventsByAttendeeName(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(404);
+        });
+    });
+
     describe("updateUser", () => {
         test("it returns successful response with 200 status code", async () => {
             const testUser = testUserData[0];
@@ -136,44 +197,6 @@ describe("User controller", () => {
             };
             await userController.updateUser(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(400);
-        });
-    });
-
-    describe("updatePass", () => {
-        test("it returns successful response with 200 status code", async () => {
-            const testUser = new User(testUserData[0]);
-            jest.spyOn(User, "findById").mockResolvedValueOnce(testUser);
-            jest.spyOn(User.prototype, "updatePassword").mockResolvedValueOnce(
-                "Password updated successfully."
-            );
-            const mockReq = {
-                body: {
-                    password: "Password",
-                },
-                params: {
-                    user_id: "test ID",
-                },
-            };
-            await userController.updatePass(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(200);
-        });
-
-        test("it responds with code 400 in case of error", async () => {
-            jest.spyOn(User.prototype, "updatePassword").mockImplementation(
-                () => {
-                    throw new Error();
-                }
-            );
-            const mockReq = {
-                body: {
-                    password: "Password",
-                },
-                params: {
-                    user_id: "test ID",
-                },
-            };
-            await userController.updatePass(mockReq, mockRes);
-            expect(mockStatus).toHaveBeenCalledWith(500);
         });
     });
 

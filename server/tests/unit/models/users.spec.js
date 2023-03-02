@@ -22,6 +22,13 @@ describe("User Model", () => {
             const result = await User.findAllUsers();
             expect(result).toHaveLength(5);
         });
+
+        test("it resolves with error message on failure", async () => {
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(User.findAllUsers()).rejects.toBeInstanceOf(Error);
+        });
     });
 
     describe("findById", () => {
@@ -43,12 +50,42 @@ describe("User Model", () => {
             expect(result.id).toBe(2);
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
+            let testId = 1;
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await User.findById("fake ID");
-            expect(result.message).toMatch(/User not found/);
+            return expect(User.findById(testId)).rejects.toBeInstanceOf(Error);
+        });
+    });
+
+    describe("findByName", () => {
+        test("it resolves with user data on successful db query", async () => {
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: [testUsers[0]],
+            });
+            const result = await User.findByName("Test User 1");
+            expect(result).toBeInstanceOf(User);
+            expect(result.id).toBe(1);
+        });
+
+        test("it resolves with user data on successful db query", async () => {
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: [testUsers[1]],
+            });
+            const result = await User.findByName("Test User 2");
+            expect(result).toBeInstanceOf(User);
+            expect(result.id).toBe(2);
+        });
+
+        test("it resolves with error message on failure", async () => {
+            let testName = "faketestguy";
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(User.findByName(testName)).rejects.toBeInstanceOf(
+                Error
+            );
         });
     });
 
@@ -75,12 +112,14 @@ describe("User Model", () => {
             expect(result).not.toBeDefined();
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
+            let testEmail = "test@email.com";
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await User.findByEmail("fake email");
-            expect(result).toBeInstanceOf();
+            return expect(User.findByEmail(testEmail)).rejects.toBeInstanceOf(
+                Error
+            );
         });
     });
 
@@ -97,18 +136,23 @@ describe("User Model", () => {
             jest.spyOn(db, "query").mockResolvedValueOnce({
                 rows: [{ ...newUser, id: 1 }],
             });
+            jest.spyOn(User.prototype, "createPassword").mockResolvedValueOnce(
+                {}
+            );
             const result = await User.createUser(newUser);
             expect(result).toBeInstanceOf(User);
             expect(result).toHaveProperty("id");
             expect(result.id).toBe(1);
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
+            let testUser = testUsers[0];
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await User.createUser({}, "fakepassword");
-            expect(result.message).toMatch(/User Creation Failed/);
+            return expect(User.createUser(testUser)).rejects.toBeInstanceOf(
+                Error
+            );
         });
     });
 
@@ -136,13 +180,16 @@ describe("User Model", () => {
             expect(result.email).toBe("newemail@email.com");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User();
+        test("it resolves with error message on failure", async () => {
+            let updatedUserInfo = {
+                email: "newemail@email.com",
+            };
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.update({});
-            expect(result).toBeInstanceOf(Error);
+            return expect(
+                User.updateUser(updatedUserInfo)
+            ).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -162,17 +209,15 @@ describe("User Model", () => {
             expect(result).toMatch("User deleted");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User();
+        test("it resolves with error message on failure", async () => {
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.update({});
-            expect(result).toBeInstanceOf(Error);
+            return expect(User.deleteUser(1)).rejects.toBeInstanceOf(Error);
         });
     });
 
-    describe("getPasswordHash", () => {
+    describe("get passwordHash", () => {
         test("it resolves with user 1's password hash", async () => {
             jest.spyOn(db, "query").mockResolvedValueOnce({
                 rows: [testAuthData[0]],
@@ -195,13 +240,12 @@ describe("User Model", () => {
             );
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User({ id: 1 });
+        test("it resolves with error message on failure", async () => {
+            let user = new User(testUsers[0]);
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.passwordHash;
-            expect(result).toBeInstanceOf(Error);
+            return expect(user.passwordHash).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -216,13 +260,15 @@ describe("User Model", () => {
             expect(result).toContain("Password created.");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User({ id: 1 });
+        test("it resolves with error message on failure", async () => {
+            let newPassword = "example";
+            let user = new User(testUsers[0]);
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.createPassword("fakepassword");
-            expect(result).toBeInstanceOf(Error);
+            return expect(
+                user.createPassword(newPassword)
+            ).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -237,13 +283,15 @@ describe("User Model", () => {
             expect(result).toContain("Password updated successfully.");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User({ id: 1 });
+        test("it resolves with error message on failure", async () => {
+            let newPassword = "example";
+            let user = new User(testUsers[0]);
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.updatePassword("fakepassword");
-            expect(result.message).toMatch(/Failed to update password/);
+            return expect(
+                user.updatePassword(newPassword)
+            ).rejects.toBeInstanceOf(Error);
         });
     });
 });

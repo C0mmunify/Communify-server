@@ -5,6 +5,7 @@ jest.mock("pg");
 const db = require("../../../dbConfig");
 
 const testEvents = require("../testEventSeeds.json");
+const testUsers = require("../testUserSeeds.json");
 
 describe("Event Model", () => {
     beforeEach(() => jest.clearAllMocks());
@@ -20,6 +21,13 @@ describe("Event Model", () => {
             });
             const result = await Event.findAllEvents(true);
             expect(result).toHaveLength(5);
+        });
+
+        test("it resolves with error message on failure", async () => {
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(Event.findAllEvents()).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -46,12 +54,11 @@ describe("Event Model", () => {
             expect(result.title).toMatch(/Example Event 5/);
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await Event.findById("fake ID");
-            expect(result.message).toMatch(/No event found with given ID/);
+            return expect(Event.findById(1)).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -76,12 +83,32 @@ describe("Event Model", () => {
             expect(result.title).toBe("Example Event 4");
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await Event.findByTitle("fake title");
-            expect(result).toMatch(/No event found with given title/);
+            return expect(
+                Event.findByTitle("Example Event 1")
+            ).rejects.toBeInstanceOf(Error);
+        });
+    });
+
+    describe("findByCreator", () => {
+        test("it resolves with event data on successful db query", async () => {
+            let mockCreatorId = testEvents[1].creator_id;
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: [testEvents[1], testEvents[2]],
+            });
+            const result = await Event.findByCreator(mockCreatorId);
+            expect(result).toHaveLength(2);
+            expect(result[0].title).toBe("Example Event 2");
+        });
+
+        test("it resolves with error message on failure", async () => {
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(Event.findByCreator(1)).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -108,12 +135,13 @@ describe("Event Model", () => {
             expect(result[1]).toBeInstanceOf(Event);
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await User.findById("fake ID");
-            expect(result.message).toMatch(/No events found for given user/);
+            return expect(Event.findByAttendeeId(1)).rejects.toBeInstanceOf(
+                Error
+            );
         });
     });
 
@@ -139,12 +167,14 @@ describe("Event Model", () => {
             expect(result.id).toBe(1);
         });
 
-        xtest("it resolves with error message on failure", async () => {
+        test("it resolves with error message on failure", async () => {
+            let mockEventData = testEvents[0];
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await User.createUser({});
-            expect(result.message).toMatch(/Event Creation Failed/);
+            return expect(
+                Event.createEvent(mockEventData)
+            ).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -163,13 +193,16 @@ describe("Event Model", () => {
             expect(result.description).toBe("new description");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User();
+        test("it resolves with error message on failure", async () => {
+            let mockEventData = {
+                description: "updated description",
+            };
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.update({});
-            expect(result).toBeInstanceOf(Error);
+            return expect(
+                Event.updateEvent(mockEventData)
+            ).rejects.toBeInstanceOf(Error);
         });
     });
 
@@ -181,13 +214,94 @@ describe("Event Model", () => {
             expect(result).toMatch("Event deleted");
         });
 
-        xtest("it resolves with error message on failure", async () => {
-            let testUser = new User();
+        test("it resolves with error message on failure", async () => {
             jest.spyOn(db, "query").mockImplementation(() => {
-                throw new Error("example error message");
+                throw new Error();
             });
-            const result = await testUser.update({});
-            expect(result).toMatch(/Failed to delete event/);
+            return expect(Event.deleteEvent(1)).rejects.toBeInstanceOf(Error);
+        });
+    });
+
+    describe("getAttendees", () => {
+        test("it resolves with attendees", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockResolvedValueOnce({ rows: testUsers });
+            const result = await event.getAttendees();
+            expect(result).toHaveLength(5);
+        });
+
+        test("it resolves with error message on failure", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(event.getAttendees).rejects.toBeInstanceOf(Error);
+        });
+    });
+
+    describe("checkAttendance", () => {
+        test("it resolves with false if user is not attending", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: [],
+            });
+            const result = await event.checkAttendance(1);
+            expect(result).not.toBeTruthy();
+        });
+
+        test("it resolves with true if user is attending", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockResolvedValueOnce({
+                rows: [testUsers[2]],
+            });
+            const result = await event.checkAttendance(3);
+            expect(result).toBeTruthy();
+        });
+
+        test("it resolves with error message on failure", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(event.checkAttendance(1)).rejects.toBeInstanceOf(
+                Error
+            );
+        });
+    });
+
+    describe("addAttendee", () => {
+        test("it resolves with success message", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockResolvedValueOnce("Success");
+            const result = await event.addAttendee(1);
+            expect(result).toMatch(/success/i);
+        });
+
+        test("it resolves with error message on failure", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(event.addAttendee(123)).rejects.toBeInstanceOf(Error);
+        });
+    });
+
+    describe("deleteAttendee", () => {
+        test("it resolves with success message", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockResolvedValueOnce("Success");
+            const result = await event.deleteAttendee(1);
+            expect(result).toMatch(/success/i);
+        });
+
+        test("it resolves with error message on failure", async () => {
+            let event = new Event(testEvents[0]);
+            jest.spyOn(db, "query").mockImplementation(() => {
+                throw new Error();
+            });
+            return expect(event.deleteAttendee(123)).rejects.toBeInstanceOf(
+                Error
+            );
         });
     });
 });
