@@ -7,7 +7,7 @@ async function findAllUsers(req, res) {
     try {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
-            let user = await User.findAllUsers();
+            let users = await User.findAllUsers();
             users = filters.applyQueryFilters(req, users);
             res.status(200).json(user);
         } else {
