@@ -1,8 +1,7 @@
 const db = require("../dbConfig");
 // const utils = require("../utilities/filterUtils");
 const User = require("./userModel");
-const queryUtils = require("../utilities/queryUtils");
-const miscUtils = require("../utilities/miscUtils");
+const utils = require("../utilities/modelUtils");
 
 //Change for Change sake
 
@@ -102,7 +101,7 @@ class Event {
     static createEvent(eventData) {
         return new Promise(async (resolve, reject) => {
             try {
-                let data = miscUtils.setDates(eventData);
+                let data = utils.setDates(eventData);
                 let params = Object.values(data);
                 let newEventData = await db.query(
                     `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occurring,date_ending,date_created) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *;`,
@@ -120,7 +119,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let sqlQueryString =
-                    queryUtils.generateUpdateEventsQueryString(eventData);
+                    utils.generateUpdateEventsQueryString(eventData);
                 let updateValues = Object.values(eventData);
                 let updateEventData = await db.query(
                     sqlQueryString,

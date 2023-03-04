@@ -1,5 +1,5 @@
 const db = require("../dbConfig");
-const utils = require("../utilities/queryUtils");
+const utils = require("../utilities/modelUtils");
 
 //Change for Change sake
 

@@ -190,7 +190,7 @@ describe("User endpoints", () => {
                 expect(res1.body).toHaveLength(8);
                 const res2 = await request(api)
                     .delete("/users/7")
-                    .set("Accept", "application/json")
+                    .set("Content-Type", "application/json")
                     .set("authorization", adminToken);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)

@@ -1,9 +1,9 @@
 const Event = require("../models/eventModel");
-const authUtils = require("../utilities/authUtils");
+const utils = require("../utilities/authUtils");
 
 async function findAllEvents(req, res) {
     try {
-        let admin = authUtils.CheckAdmin(req.headers);
+        let admin = utils.CheckAdmin(req.headers);
         if (admin) {
             const events = await Event.findAllEvents();
             res.status(200).json(events);
@@ -96,8 +96,8 @@ async function updateEvent(req, res) {
 
 async function deleteEvent(req, res) {
     try {
-        await Event.deleteEvent(req.params.event_id);
-        res.status(200);
+        let result = await Event.deleteEvent(req.params.event_id);
+        res.status(200).send(result);
     } catch (err) {
         res.status(500).send();
     }
@@ -107,7 +107,7 @@ async function removeAttendee(req, res) {
     try {
         const event = await Event.findById(req.params.event_id);
         let result = await event.deleteAttendee(req.params.user_id);
-        res.status(200).json(result);
+        res.status(200).send(result);
     } catch (err) {
         res.status(500).send();
     }

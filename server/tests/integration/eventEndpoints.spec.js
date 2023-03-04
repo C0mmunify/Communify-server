@@ -235,7 +235,7 @@ describe("Event endpoints", () => {
                 expect(res1.body).toHaveLength(4);
                 const res2 = await request(api)
                     .delete("/events/3")
-                    .set("Accept", "application/json")
+                    .set("Content-Type", "application/json")
                     .set("authorization", adminToken);
                 expect(res2.statusCode).toEqual(200);
                 const res3 = await request(api)

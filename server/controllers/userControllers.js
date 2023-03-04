@@ -1,10 +1,10 @@
 const User = require("../models/userModel");
 const Event = require("../models/eventModel");
-const authUtils = require("../utilities/authUtils");
+const utils = require("../utilities/authUtils");
 
 async function findAllUsers(req, res) {
     try {
-        let admin = authUtils.CheckAdmin(req.headers);
+        let admin = utils.CheckAdmin(req.headers);
         if (admin) {
             const user = await User.findAllUsers();
             res.status(200).json(user);
@@ -72,8 +72,8 @@ async function updateUser(req, res) {
 
 async function deleteUser(req, res) {
     try {
-        await User.deleteUser(req.params.user_id);
-        res.status(200);
+        let result = await User.deleteUser(req.params.user_id);
+        res.status(200).send(result);
     } catch (err) {
         res.status(400).json({
             error: "Failed to delete user: " + err.message,

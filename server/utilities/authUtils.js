@@ -16,4 +16,5 @@ function DecodeJwtToken(token) {
 
 module.exports = {
     CheckAdmin,
+    DecodeJwtToken,
 };
