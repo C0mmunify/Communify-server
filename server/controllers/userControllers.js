@@ -1,12 +1,14 @@
 const User = require("../models/userModel");
 const Event = require("../models/eventModel");
 const utils = require("../utilities/authUtils");
+const filters = require("../utilities/controllerUtils");
 
 async function findAllUsers(req, res) {
     try {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
-            const user = await User.findAllUsers();
+            let user = await User.findAllUsers();
+            users = filters.applyQueryFilters(req, users);
             res.status(200).json(user);
         } else {
             res.status(403).json({ error: "Logged in user is not admin" });
@@ -37,7 +39,8 @@ async function findByName(req, res) {
 
 async function findEventsByCreator(req, res) {
     try {
-        const events = await Event.findByCreator(req.params.user_id);
+        let events = await Event.findByCreator(req.params.user_id);
+        events = filters.applyQueryFilters(req, events);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json({ error: err.message });
@@ -48,7 +51,9 @@ async function findEventsByAttendeeName(req, res) {
     try {
         let decodedName = decodeURI(req.params.user_name);
         const user = await User.findByName(decodedName);
-        const events = await Event.findByAttendeeId(user.id);
+        let events = await Event.findByAttendeeId(user.id);
+        events = filters.applyQueryFilters(req, events);
+        events = filters.filterByCouncil(req, data);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json({ error: err.message });

@@ -1,11 +1,13 @@
 const Event = require("../models/eventModel");
 const utils = require("../utilities/authUtils");
+const filters = require("../utilities/controllerUtils");
 
 async function findAllEvents(req, res) {
     try {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
-            const events = await Event.findAllEvents();
+            let events = await Event.findAllEvents();
+            events = filters.applyQueryFilters(req, events);
             res.status(200).json(events);
         } else {
             res.status(403).json({ message: "Logged in user is not admin" });
