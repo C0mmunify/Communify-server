@@ -7,7 +7,9 @@ async function findAllEvents(req, res) {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
             let events = await Event.findAllEvents();
-            events = filters.applyQueryFilters(req, events);
+            if (!!req.query) {
+                events = filters.applyQueryFilters(req, events);
+            }
             res.status(200).json(events);
         } else {
             res.status(403).json({ message: "Logged in user is not admin" });

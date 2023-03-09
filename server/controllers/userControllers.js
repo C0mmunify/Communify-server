@@ -8,8 +8,7 @@ async function findAllUsers(req, res) {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
             let users = await User.findAllUsers();
-            users = filters.applyQueryFilters(req, users);
-            res.status(200).json(user);
+            res.status(200).json(users);
         } else {
             res.status(403).json({ error: "Logged in user is not admin" });
         }
@@ -40,7 +39,9 @@ async function findByName(req, res) {
 async function findEventsByCreator(req, res) {
     try {
         let events = await Event.findByCreator(req.params.user_id);
-        events = filters.applyQueryFilters(req, events);
+        if (!!req.query) {
+            events = filters.applyQueryFilters(req, events);
+        }
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json({ error: err.message });
@@ -52,8 +53,10 @@ async function findEventsByAttendeeName(req, res) {
         let decodedName = decodeURI(req.params.user_name);
         const user = await User.findByName(decodedName);
         let events = await Event.findByAttendeeId(user.id);
-        events = filters.applyQueryFilters(req, events);
-        events = filters.filterByCouncil(req, data);
+        if (!!req.query) {
+            events = filters.applyQueryFilters(req, events);
+        }
+        events = filters.filterByCouncil(req, events);
         res.status(200).json(events);
     } catch (err) {
         res.status(404).json({ error: err.message });
