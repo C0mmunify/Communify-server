@@ -40,6 +40,15 @@ describe("Event endpoints", () => {
                 expect(res.body).toHaveLength(4);
             });
 
+            test("it should return all events in a date range", async () => {
+                const res = await request(api)
+                    .get("/events?startDate=1674653400&endDate=1674898200")
+                    .set("authorization", adminToken)
+                    .set("Accept", "application/json");
+                expect(res.statusCode).toEqual(200);
+                expect(res.body).toHaveLength(2);
+            });
+
             test("it should return 403 if consumer is non-admin", async () => {
                 const res = await request(api)
                     .get("/events")

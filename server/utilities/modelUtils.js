@@ -24,15 +24,15 @@ function generateUpdateEventsQueryString(eventData) {
     return sqlQueryString.join(" ");
 }
 
-function generateFindByAttendeeIdQueryString(attendeeId) {
-    // take the ID of arrays from model and generate an SQL query string from it
-    let setStringValues = join("','", attendeeId);
-    let sqlQueryString = [
-        `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE id IN ('$setStringValues')`,
-    ];
-    // sqlQueryString.push(setStringValues)
-    return sqlQueryString;
-}
+// function generateFindByAttendeeIdQueryString(attendeeId) {
+//     // take the ID of arrays from model and generate an SQL query string from it
+//     let setStringValues = join("','", attendeeId);
+//     let sqlQueryString = [
+//         `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE id IN ('$setStringValues')`,
+//     ];
+//     // sqlQueryString.push(setStringValues)
+//     return sqlQueryString;
+// }
 
 function setDates(eventData) {
     eventData.date_occurring = new Date(eventData.date_occurring);
@@ -44,6 +44,6 @@ function setDates(eventData) {
 module.exports = {
     generateUpdateUsersQueryString,
     generateUpdateEventsQueryString,
-    generateFindByAttendeeIdQueryString,
+    // generateFindByAttendeeIdQueryString,
     setDates,
 };

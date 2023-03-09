@@ -5,6 +5,7 @@ const User = require("../../../models/userModel");
 const Event = require("../../../models/eventModel");
 const testUserData = require("../testUserSeeds.json");
 const testEventData = require("../testEventSeeds.json");
+const filters = require("../../../utilities/controllerUtils");
 
 const mockSend = jest.fn();
 const mockJson = jest.fn((message) => ({}));
@@ -150,9 +151,16 @@ describe("User controller", () => {
             jest.spyOn(Event, "findByAttendeeId").mockResolvedValueOnce(
                 testEvents
             );
+            jest.spyOn(filters, "applyQueryFilters").mockResolvedValueOnce(
+                testEvents
+            );
             const mockReq = {
                 params: {
                     user_name: "test%20name",
+                },
+                headers: {
+                    authorization:
+                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.7DXwNbHtZoPUCoGv_Odt-jIOY2bBJDhBJeZKwpWCvCM",
                 },
             };
             await userController.findEventsByAttendeeName(mockReq, mockRes);

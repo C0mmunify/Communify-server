@@ -5,28 +5,27 @@ const nonExpiredFilter = require("../filters/nonExpiredEvents");
 
 function filterByCouncil(req, data) {
     let userData = DecodeJwtToken(req.headers["authorization"].split(" ")[1]);
-    let localArea = userData.filterByCouncil;
+    let localArea = userData.council;
     let filteredData = councilFilter(localArea, data);
     return filteredData;
 }
 
 function applyQueryFilters(req, data) {
-    let filteredData;
     const queryParams = req.query;
 
     if (!!queryParams.startDate || !!queryParams.endDate) {
-        lowerDate = queryParams.startDate
-            ? !undefined
+        lowerDate = !!queryParams.startDate
+            ? queryParams.startDate
             : new Date("1970-01-01T00:00:00.000Z");
-        upperDate = queryParams.endDate ? !undefined : new Date();
-        filteredData = dateRangeFilter(lowerDate, upperDate, data);
+        upperDate = !!queryParams.endDate ? queryParams.endDate : new Date();
+        data = dateRangeFilter(lowerDate, upperDate, data);
     }
 
     if (!!queryParams.notExpired) {
-        filteredData = nonExpiredFilter(data);
+        data = nonExpiredFilter(data);
     }
 
-    return filteredData;
+    return data;
 }
 
 module.exports = {

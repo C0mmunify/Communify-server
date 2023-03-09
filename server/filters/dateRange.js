@@ -1,10 +1,9 @@
-export default function (lowerDate, upperDate) {
-    lowerDate = new Date(lowerDate);
-    upperDate = new Date(upperDate);
-    let filteredEvents;
-    filteredEvents = events.filter(
+module.exports = function dateRangeFilter(startDate, endDate, events) {
+    let lowerDate = new Date(startDate);
+    let upperDate = new Date(endDate);
+    let filteredEvents = events.filter(
         (event) =>
             event.dateOccuring >= lowerDate && event.dateOccuring < upperDate
     );
     return filteredEvents;
-}
+};
