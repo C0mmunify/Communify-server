@@ -62,6 +62,9 @@ async function findByTitle(req, res) {
 async function createEvent(req, res) {
     try {
         let eventData = req.body;
+        eventData.creator_id = utils.DecodeJwtToken(
+            req.headers["authorization"]
+        ).id;
         const event = await Event.createEvent(eventData);
         res.status(201).json(event);
     } catch (err) {
