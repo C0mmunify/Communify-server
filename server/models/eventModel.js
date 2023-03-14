@@ -16,7 +16,7 @@ class Event {
         this.spacesTotal = data.spaces_total;
         this.spacesRemaining = data.spaces_remaining;
         this.dateCreated = data.date_created;
-        this.dateOcurring = data.date_occurring;
+        this.dateOccurring = data.date_occurring;
         this.dateEnding = data.date_ending;
     }
 
@@ -107,7 +107,17 @@ class Event {
                 let params = Object.values(data);
                 let newEventData = await db.query(
                     `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occurring,date_ending,date_created) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *;`,
-                    params
+                    [
+                        params.title,
+                        params.description,
+                        params.location,
+                        params.council,
+                        params.creator_id,
+                        params.spaces_total,
+                        params.spaces_remaining,
+                        params.date_occurring,
+                        params.date_created,
+                    ]
                 );
                 let newEvent = new Event(newEventData.rows[0]);
                 resolve(newEvent);
