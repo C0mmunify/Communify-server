@@ -21,7 +21,7 @@ async function register(req, res) {
         );
         res.status(201).json(result);
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send();
     }
 }
 
@@ -54,7 +54,7 @@ async function login(req, res) {
             res.status(401).json({ error: "Incorrect password" });
         }
     } catch (err) {
-        res.status(500).send(err);
+        res.status(500).send();
     }
 }
 
