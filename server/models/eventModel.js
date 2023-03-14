@@ -23,7 +23,9 @@ class Event {
     static findAllEvents() {
         return new Promise(async (resolve, reject) => {
             try {
-                let eventData = await db.query(`SELECT * FROM events;`);
+                let eventData = await db.query(
+                    `SELECT * FROM events ORDER BY date_occurring ASC;`
+                );
                 const events = eventData["rows"].map(
                     (event) => new Event(event)
                 );
@@ -53,7 +55,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let eventData = await db.query(
-                    `SELECT * FROM events WHERE creator_id = $1;`,
+                    `SELECT * FROM events WHERE creator_id = $1 ORDER BY date_occurring ASC;`,
                     [creator_id]
                 );
                 const events = eventData["rows"].map(
@@ -70,7 +72,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let eventData = await db.query(
-                    `SELECT * FROM events WHERE title = $1;`,
+                    `SELECT * FROM events WHERE title = $1 ORDER BY date_occurring ASC;`,
                     [title]
                 );
                 let event = new Event(eventData.rows[0]);
@@ -85,7 +87,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let eventData = await db.query(
-                    `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE attendees.user_id = $1;`,
+                    `SELECT events.* FROM attendees JOIN events ON attendees.event_id=events.id WHERE attendees.user_id = $1 ORDER BY events.date_occurring ASC;`,
                     [attendeeId]
                 );
                 const events = eventData["rows"].map(
