@@ -116,6 +116,7 @@ class Event {
                         params.spaces_total,
                         params.spaces_remaining,
                         params.date_occurring,
+                        params.date_ending,
                         params.date_created,
                     ]
                 );
