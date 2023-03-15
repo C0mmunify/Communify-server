@@ -42,7 +42,9 @@ describe("Event endpoints", () => {
 
             test("it should return all events in a date range", async () => {
                 const res = await request(api)
-                    .get("/events?startDate=1674653400&endDate=1674898200")
+                    .get(
+                        "/events?startDate=2023-01-25T13:30:00.000Z&endDate=2023-01-28T09:30:00.000Z"
+                    )
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);

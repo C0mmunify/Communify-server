@@ -15,9 +15,11 @@ function applyQueryFilters(req, data) {
 
     if (!!queryParams.startDate || !!queryParams.endDate) {
         lowerDate = !!queryParams.startDate
-            ? queryParams.startDate
-            : new Date("1970-01-01T00:00:00.000Z");
-        upperDate = !!queryParams.endDate ? queryParams.endDate : new Date();
+            ? new Date(queryParams.startDate).valueOf()
+            : new Date("1970-01-01T00:00:00.000Z").valueOf();
+        upperDate = !!queryParams.endDate
+            ? new Date(queryParams.endDate).valueOf()
+            : new Date().valueOf();
         data = dateRangeFilter(lowerDate, upperDate, data);
     }
 

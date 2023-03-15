@@ -101,12 +101,12 @@ describe("User endpoints", () => {
         describe("authenticated GET /user_name/:user_name", () => {
             test("it should retrieve users created events based on users ID", async () => {
                 const res = await request(api)
-                    .get("/users/1/events/created")
+                    .get("/users/2/events/created")
                     .set("authorization", adminToken)
                     .set("Accept", "application/json");
                 expect(res.statusCode).toEqual(200);
-                expect(res.body).toHaveLength(2);
-                expect(res.body[0].title).toMatch(/Example Event 1/i);
+                expect(res.body).toHaveLength(1);
+                expect(res.body[0].title).toMatch(/Example Event 2/i);
             });
         });
 
