@@ -13,11 +13,11 @@ class Event {
         this.council = data.council;
         this.location = data.location;
         this.creatorId = data.creator_id;
-        this.spacesTotal = data.spaces_total;
-        this.spacesRemaining = data.spaces_remaining;
-        this.dateCreated = data.date_created;
-        this.dateOccurring = data.date_occurring;
-        this.dateEnding = data.date_ending;
+        this.spaces_total = data.spaces_total;
+        this.spaces_remaining = data.spaces_remaining;
+        this.date_created = data.date_created;
+        this.date_occurring = data.date_occurring;
+        this.date_ending = data.date_ending;
     }
 
     static findAllEvents() {
