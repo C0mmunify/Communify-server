@@ -105,7 +105,7 @@ class Event {
             try {
                 let params = utils.setDates(eventData);
                 let newEventData = await db.query(
-                    `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occurring,date_ending,date_created) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *;`,
+                    `INSERT INTO events (title,description,location,council,creator_id,spaces_total,spaces_remaining,date_occurring,date_ending) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *;`,
                     [
                         params.title,
                         params.description,
@@ -116,7 +116,7 @@ class Event {
                         params.spaces_remaining,
                         params.date_occurring,
                         params.date_ending,
-                        params.date_created,
+                        // params.date_created,
                     ]
                 );
                 let newEvent = new Event(newEventData.rows[0]);
