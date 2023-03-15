@@ -24,7 +24,7 @@ class Event {
         return new Promise(async (resolve, reject) => {
             try {
                 let eventData = await db.query(
-                    `SELECT * FROM events ORDER BY date_occurring ASC;`
+                    `SELECT * FROM events ORDER BY date_occurring DESC;`
                 );
                 const events = eventData["rows"].map(
                     (event) => new Event(event)
