@@ -3,6 +3,7 @@ require("dotenv").config();
 const eventController = require("../../../controllers/eventControllers");
 const Event = require("../../../models/eventModel");
 const User = require("../../../models/userModel");
+const utils = require("../../../utilities/authUtils");
 const testEventData = require("../testEventSeeds.json");
 const testUserData = require("../testUserSeeds.json");
 
@@ -190,8 +191,12 @@ describe("Event controller", () => {
         test("it returns successful response with 201 status code", async () => {
             const testEvent = testEventData[0];
             jest.spyOn(Event, "createEvent").mockResolvedValueOnce(testEvent);
+            jest.spyOn(utils, "DecodeJwtToken").mockResolvedValueOnce(1);
             const mockReq = {
                 body: testEvent,
+                headers: {
+                    authorization: "token",
+                },
             };
             await eventController.createEvent(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(201);

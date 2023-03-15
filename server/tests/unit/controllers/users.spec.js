@@ -154,6 +154,9 @@ describe("User controller", () => {
             jest.spyOn(filters, "applyQueryFilters").mockResolvedValueOnce(
                 testEvents
             );
+            jest.spyOn(filters, "filterByCouncil").mockResolvedValueOnce(
+                testEvents
+            );
             const mockReq = {
                 params: {
                     user_name: "test%20name",
