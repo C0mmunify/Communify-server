@@ -6,7 +6,8 @@ async function findAllEvents(req, res) {
     try {
         let admin = utils.CheckAdmin(req.headers);
         if (admin) {
-            let events = await Event.findAllEvents();
+            let unfilteredEvents = await Event.findAllEvents();
+            let events = filters.filterByCouncil(req, unfilteredEvents);
             if (!!req.query) {
                 events = filters.applyQueryFilters(req, events);
             }
